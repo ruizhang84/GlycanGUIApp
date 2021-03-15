@@ -1,0 +1,13 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net5.0</TargetFramework>
+    <AssemblyName>GlycanQuant</AssemblyName>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\SpectrumDataClassLibrary\SpectrumDataClassLibrary.csproj" />
+    <ProjectReference Include="..\SpectrumProcessClassLibrary\SpectrumProcessClassLibrary.csproj" />
+  </ItemGroup>
+
+</Project>
