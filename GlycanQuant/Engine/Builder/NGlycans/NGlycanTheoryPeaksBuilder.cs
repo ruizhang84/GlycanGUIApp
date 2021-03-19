@@ -1,13 +1,13 @@
-﻿using GlycanQuant.Engine.Builder.NGlycans;
+﻿using GlycanQuant.Model.Builder.NGlycans;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace GlycanQuant.Engine.Builder
+namespace GlycanQuant.Model.Builder.NGlycans
 {
-    public class TheoryPeaksBuilder
+    public class NGlycanTheoryPeaksBuilder : ITheoryPeaksBuilder
     {
         int HexNAc;
         int Hex;
@@ -19,8 +19,9 @@ namespace GlycanQuant.Engine.Builder
         bool highMannose = false;
         bool permethylated = true;
 
-        public TheoryPeaksBuilder(bool permethylated = true, 
-            int HexNAc=12, int Hex=12, int Fuc=5, int NeuAc=4, int NeuGc=0)
+        public NGlycanTheoryPeaksBuilder(bool permethylated = true, 
+            int HexNAc=12, int Hex=12, int Fuc=5, int NeuAc=4, int NeuGc=0, 
+            bool complex=true, bool hybrid=false, bool highMannose=false)
         {
             this.HexNAc = HexNAc;
             this.Hex = Hex;
@@ -28,6 +29,9 @@ namespace GlycanQuant.Engine.Builder
             this.NeuAc = NeuAc;
             this.NeuGc = NeuGc;
             this.permethylated = permethylated;
+            this.complex = complex;
+            this.hybrid = hybrid;
+            this.highMannose = highMannose;
         }
 
         public void SetPermethylated(bool permethylated)
@@ -42,9 +46,9 @@ namespace GlycanQuant.Engine.Builder
             this.highMannose = highMannose;
         }
 
-        public List<NGlycanPeak> Build()
+        public List<IGlycanPeak> Build()
         {
-            Dictionary<string, NGlycanPeak> res = new Dictionary<string, NGlycanPeak>();
+            Dictionary<string, IGlycanPeak> res = new Dictionary<string, IGlycanPeak>();
             if (complex)
                 Add(ref res, Build(Complex));
             if (hybrid)
@@ -55,7 +59,7 @@ namespace GlycanQuant.Engine.Builder
             return res.Select(r => r.Value).ToList();
         }
 
-        private void Add(ref Dictionary<string, NGlycanPeak> res, 
+        private void Add(ref Dictionary<string, IGlycanPeak> res, 
             Dictionary<string, NGlycanPeak> found)
         {
             foreach(string key in found.Keys)

@@ -5,11 +5,13 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace GlycanQuant.Engine.Builder
+namespace GlycanQuant.Model.Builder
 {
-    interface IGlycanPeak
+    public interface IGlycanPeak
     {
         IGlycan GetGlycan();
         List<double> GetDistrib();
+        // mass of glycan corresponding to most aboundant peak
+        double HighestPeak();  
     }
 }

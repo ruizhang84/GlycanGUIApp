@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace GlycanQuant.Engine.Algorithm
+namespace GlycanQuant.Model.Algorithm
 {
     public enum ToleranceBy
     { Dalton, PPM }

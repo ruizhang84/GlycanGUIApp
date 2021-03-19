@@ -1,4 +1,4 @@
-using GlycanQuant.Engine.Util;
+using GlycanQuant.Model.Util;
 using GlycanQuant.Model;
 using GlycanQuant.Model.NGlycans;
 using NUnit.Framework;

@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace GlycanQuant.Engine.Util
+namespace GlycanQuant.Model.Util
 {
     public class Calculator
     {

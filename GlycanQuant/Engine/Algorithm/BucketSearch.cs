@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace GlycanQuant.Engine.Algorithm
+namespace GlycanQuant.Model.Algorithm
 {
     public class BucketSearch<T> : ISearch<T>
     {
@@ -140,13 +140,13 @@ namespace GlycanQuant.Engine.Algorithm
             type_ = by;
         }
 
-        void Add(Point<T> point)
-        {
-            double expect = point.Value();
-            int index = Index(expect);
-            if (index >= 0 && index < (int)data_.Count)
-                data_[index].Add(point);
-        }
+        //void Add(Point<T> point)
+        //{
+        //    double expect = point.Value();
+        //    int index = Index(expect);
+        //    if (index >= 0 && index < (int)data_.Count)
+        //        data_[index].Add(point);
+        //}
 
         bool IsMatch(double expect, double observe, double baseValue)
         {
