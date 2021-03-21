@@ -3,8 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using GlycanQuant.Model.Builder;
-using GlycanQuant.Model.Builder.NGlycans;
+using GlycanQuant.Engine.Builder;
+using GlycanQuant.Engine.Builder.NGlycans;
 using NUnit.Framework;
 
 namespace UnitTestProject

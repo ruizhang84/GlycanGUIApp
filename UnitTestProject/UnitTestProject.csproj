@@ -15,7 +15,6 @@
   <ItemGroup>
     <ProjectReference Include="..\GlycanQuant\GlycanQuant.csproj" />
     <ProjectReference Include="..\SpectrumDataClassLibrary\SpectrumDataClassLibrary.csproj" />
-    <ProjectReference Include="..\SpectrumProcessClassLibrary\SpectrumProcessClassLibrary.csproj" />
   </ItemGroup>
 
 </Project>

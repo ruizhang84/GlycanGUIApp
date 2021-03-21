@@ -7,7 +7,6 @@
 
   <ItemGroup>
     <ProjectReference Include="..\SpectrumDataClassLibrary\SpectrumDataClassLibrary.csproj" />
-    <ProjectReference Include="..\SpectrumProcessClassLibrary\SpectrumProcessClassLibrary.csproj" />
   </ItemGroup>
 
 </Project>

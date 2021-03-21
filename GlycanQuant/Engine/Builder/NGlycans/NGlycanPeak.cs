@@ -7,7 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace GlycanQuant.Model.Builder.NGlycans
+namespace GlycanQuant.Engine.Builder.NGlycans
 {
     public class NGlycanPeak : IGlycanPeak
     {

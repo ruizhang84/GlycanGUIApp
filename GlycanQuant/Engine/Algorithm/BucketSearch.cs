@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace GlycanQuant.Model.Algorithm
+namespace GlycanQuant.Engine.Algorithm
 {
     public class BucketSearch<T> : ISearch<T>
     {

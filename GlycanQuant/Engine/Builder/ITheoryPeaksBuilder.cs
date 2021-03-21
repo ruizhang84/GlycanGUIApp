@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace GlycanQuant.Model.Builder
+namespace GlycanQuant.Engine.Builder
 {
     public interface ITheoryPeaksBuilder
     {

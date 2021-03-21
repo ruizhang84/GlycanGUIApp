@@ -1,5 +1,5 @@
-﻿using GlycanQuant.Model;
-using GlycanQuant.Model.Builder;
+﻿using GlycanQuant.Engine.Algorithm;
+using GlycanQuant.Engine.Builder;
 using SpectrumData;
 using System;
 using System.Collections.Generic;
@@ -7,15 +7,14 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace GlycanQuant.Model.Search
+namespace GlycanQuant.Engine.Search
 {
     public interface ISpectrumSearch
     {
-        double Tolerance();
-        void SetTolerance(double tol);
         List<IResult> Search(ISpectrum spectrum);
-        double Target(IGlycanPeak glycan);
-        List<IPeak> Envelope(double mz, int charge);
-        double Score(List<IPeak> cluster, IGlycanPeak glycan);
+        void SetTolerance(double tol);
+        void SetToleranceBy(ToleranceBy by);
+        void SetMaxCharge(int charge);
+        void SetCutoff(int score);
     }
 }

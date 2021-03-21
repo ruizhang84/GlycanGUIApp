@@ -2,14 +2,20 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using GlycanQuant.Model.Builder;
-using GlycanQuant.Model.Search.NGlycans;
+using GlycanQuant.Engine.Builder;
+using GlycanQuant.Engine.Search;
 using SpectrumData;
 
-namespace GlycanQuant.Model.Search.Envelope
+namespace GlycanQuant.Engine.Search.Envelope
 {
     public class MonoisotopicSearcher
     {
+        IResultFactory factory;
+        public MonoisotopicSearcher(IResultFactory factory)
+        {
+            this.factory = factory;
+        }
+
         public List<SortedDictionary<int, IPeak>> Combinator(SortedDictionary<int, List<IPeak>> cluster)
         {
             List<SortedDictionary<int, IPeak>> results = new List<SortedDictionary<int, IPeak>>();
@@ -165,7 +171,7 @@ namespace GlycanQuant.Model.Search.Envelope
                     bestPeaks = sequence.Select(s => s.Value).ToList();
                 }
             }
-            return new NGlycanResult(glycan, maxScore, bestPeaks);
+            return factory.Produce(glycan, maxScore, bestPeaks);
         }
 
     }

@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace PrecursorIonClassLibrary.Charges
+namespace GlycanQuant.Spectrum.Charges
 {
     public class Interpolation
     {

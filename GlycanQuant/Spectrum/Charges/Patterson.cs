@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-namespace PrecursorIonClassLibrary.Charges
+namespace GlycanQuant.Spectrum.Charges
 {
     // patterson routine
     public class Patterson : ICharger

@@ -1,56 +1,108 @@
-﻿using GlycanQuant.Model.Algorithm;
-using GlycanQuant.Model;
+﻿using GlycanQuant.Engine.Algorithm;
 using SpectrumData;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using GlycanQuant.Model.Builder;
+using GlycanQuant.Engine.Builder;
+using GlycanQuant.Engine.Search.Envelope;
+using GlycanQuant.Spectrum.Process;
+using GlycanQuant.Spectrum.Charges;
+using GlycanQuant.Model.Util;
 
-namespace GlycanQuant.Model.Search.NGlycans
+namespace GlycanQuant.Engine.Search.NGlycans
 {
     public class NGlycanSpectrumSearch : ISpectrumSearch
     {
-        double tol;
-        ISearch<IPeak> searcher;
+        List<IGlycanPeak> glycans;
+        EnvelopeProcess envelopeProcessor;
+        MonoisotopicSearcher monoisotopicSearcher;
+        IProcess spectrumProcessor;
+        ICharger charger;
+        int maxCharge = 4;
+        double cutoff = 0.9;
 
-        public NGlycanSpectrumSearch(double tol, ISearch<IPeak> searcher)
+        readonly double lower = 200;
+        readonly double upper = 2000;
+        readonly double range = 1.0;
+
+        public NGlycanSpectrumSearch(List<IGlycanPeak> glycans,
+            IProcess spectrumProcessor, ICharger charger,
+            EnvelopeProcess envelopeProcessor, MonoisotopicSearcher monoisotopicSearcher,
+            int maxCharge = 4, double cutoff = 0.9)
         {
-            this.tol = tol;
-            this.searcher = searcher;
-        }
-
-
-        public List<IPeak> Envelope(double mz, int charge)
-        {
-            List<IPeak> matches = searcher.Search(mz);
-            return matches;
-        }
-
-        public double Score(List<IPeak> cluster, IGlycanPeak glycan)
-        {
-            throw new NotImplementedException();
+            this.glycans = glycans;
+            this.charger = charger;
+            this.spectrumProcessor = spectrumProcessor;
+            this.envelopeProcessor = envelopeProcessor;
+            this.monoisotopicSearcher = monoisotopicSearcher;
+            this.maxCharge = maxCharge;
+            this.cutoff = cutoff;
         }
 
         public List<IResult> Search(ISpectrum spectrum)
         {
-            throw new NotImplementedException();
+            List<IResult> results = new();
+
+            ISpectrum spec = spectrumProcessor.Process(spectrum);
+            envelopeProcessor.Init(spec);
+
+            foreach (IGlycanPeak glycan in glycans)
+            {
+                IResult result = null;
+                double bestScore = 0;
+                for (int charge = 1; charge < maxCharge; charge++)
+                {
+                    List<double> mzList = Calculator.To.ComputeMZ(glycan.HighestPeak(), charge);
+                    foreach(double mz in mzList)
+                    {
+                        List<IPeak> targets = envelopeProcessor.Search(mz);
+                        if (targets.Count == 0)
+                            continue;
+
+                        List<IPeak> peaks = spectrum.GetPeaks()
+                            .Where(p => p.GetMZ() < mz + range && p.GetMZ() > mz - range).ToList();
+                        int tempCharge = charger.Charge(peaks, lower, upper);
+                        if (tempCharge != charge)
+                            continue;
+
+                        SortedDictionary<int, List<IPeak>> clusters = 
+                            envelopeProcessor.Cluster(mz, charge);
+
+                        IResult temp = monoisotopicSearcher.Match(glycan, clusters);
+                        double score = temp.Score();
+                        if (score > cutoff && score > bestScore)
+                        {
+                            bestScore = score;
+                            result = temp;
+                        }
+                    }
+                }
+                if (result != null)
+                    results.Add(result);
+            }
+            return results;
         }
 
         public void SetTolerance(double tol)
         {
-            this.tol = tol;
+            envelopeProcessor.SetTolerance(tol);
         }
 
-        public double Target(IGlycanPeak glycan)
+        public void SetToleranceBy(ToleranceBy by)
         {
-            return glycan.HighestPeak();
+            envelopeProcessor.SetToleranceBy(by);
         }
 
-        public double Tolerance()
+        public void SetMaxCharge(int charge)
         {
-            return tol;
+            maxCharge = charge;
+        }
+
+        public void SetCutoff(int score)
+        {
+            cutoff = score;
         }
     }
 }

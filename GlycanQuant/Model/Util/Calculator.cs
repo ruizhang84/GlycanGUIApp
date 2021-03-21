@@ -39,6 +39,17 @@ namespace GlycanQuant.Model.Util
             return (mass + extra) / charge;
         }
 
+        public List<double> ComputeMZ(double mass, int charge)
+        {
+            List<double> mzList = new List<double>();
+            foreach(double ion in ions)
+            {
+                mzList.Add(mass / charge + ion);
+            }
+            return mzList;
+        }
+
+
         private void ReCurComputeMZ(double mass, int idx,
             int charge, int maxCharge, ref List<double> ans)
         {
@@ -52,7 +63,7 @@ namespace GlycanQuant.Model.Util
             }
         }
 
-        public List<double> ComputeMZ(double mass, int maxCharge = 3)
+        public List<double> ComputeMZMax(double mass, int maxCharge = 3)
         {
             List<double> mzList = new List<double>();
             ReCurComputeMZ(mass, 0, 0, maxCharge, ref mzList);

@@ -1,27 +1,41 @@
-﻿using GlycanQuant.Model.Algorithm;
+﻿using GlycanQuant.Engine.Algorithm;
 using SpectrumData;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-namespace GlycanQuant.Model.Search.Envelope
+namespace GlycanQuant.Engine.Search.Envelope
 {
     public class EnvelopeProcess
     {
-        private double range = 1; // 1 mz
+        readonly double range = 1; // 1 mz
         ISearch<IPeak> searcher;
 
-        public EnvelopeProcess(ISearch<IPeak> searcher, double range = 1)
+        public EnvelopeProcess(double tol = 0.01, ToleranceBy by = ToleranceBy.Dalton)
         {
-            this.searcher = searcher;
-            this.range = range;
+            searcher = new BucketSearch<IPeak>(by, tol);
         }
 
         public void Init(ISpectrum spectrum)
         {
             searcher.Init(spectrum.GetPeaks()
                 .Select(p => new Point<IPeak>(p.GetMZ(), p)).ToList());
+        }
+
+        public void SetTolerance(double tol)
+        {
+            searcher.SetTolerance(tol);
+        }
+
+        public void SetToleranceBy(ToleranceBy by)
+        {
+            searcher.SetToleranceBy(by);
+        }
+
+        public List<IPeak> Search(double mz)
+        {
+            return searcher.Search(mz);
         }
 
         public SortedDictionary<int, List<IPeak>> Cluster(double mz, int charge)

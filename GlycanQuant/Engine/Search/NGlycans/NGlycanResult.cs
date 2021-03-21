@@ -1,5 +1,6 @@
-﻿using GlycanQuant.Model;
-using GlycanQuant.Model.Builder;
+﻿using GlycanQuant.Engine.Search;
+using GlycanQuant.Engine;
+using GlycanQuant.Engine.Builder;
 using SpectrumData;
 using System;
 using System.Collections.Generic;
@@ -7,7 +8,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace GlycanQuant.Model.Search.NGlycans
+namespace GlycanQuant.Engine.Search.NGlycans
 {
     public class NGlycanResult : IResult
     {
