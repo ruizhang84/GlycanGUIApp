@@ -19,21 +19,15 @@ namespace GlycanQuant.Engine.Search.NGlycans
         EnvelopeProcess envelopeProcessor;
         MonoisotopicSearcher monoisotopicSearcher;
         IProcess spectrumProcessor;
-        ICharger charger;
         int maxCharge = 4;
         double cutoff = 0.9;
 
-        readonly double lower = 200;
-        readonly double upper = 2000;
-        readonly double range = 1.0;
-
         public NGlycanSpectrumSearch(List<IGlycanPeak> glycans,
-            IProcess spectrumProcessor, ICharger charger,
-            EnvelopeProcess envelopeProcessor, MonoisotopicSearcher monoisotopicSearcher,
+            IProcess spectrumProcessor, EnvelopeProcess envelopeProcessor, 
+            MonoisotopicSearcher monoisotopicSearcher,
             int maxCharge = 4, double cutoff = 0.9)
         {
             this.glycans = glycans;
-            this.charger = charger;
             this.spectrumProcessor = spectrumProcessor;
             this.envelopeProcessor = envelopeProcessor;
             this.monoisotopicSearcher = monoisotopicSearcher;
@@ -61,12 +55,6 @@ namespace GlycanQuant.Engine.Search.NGlycans
                         if (targets.Count == 0)
                             continue;
 
-                        List<IPeak> peaks = spectrum.GetPeaks()
-                            .Where(p => p.GetMZ() < mz + range && p.GetMZ() > mz - range).ToList();
-                        int tempCharge = charger.Charge(peaks, lower, upper);
-                        if (tempCharge != charge)
-                            continue;
-
                         SortedDictionary<int, List<IPeak>> clusters = 
                             envelopeProcessor.Cluster(mz, charge);
 
@@ -76,6 +64,9 @@ namespace GlycanQuant.Engine.Search.NGlycans
                         {
                             bestScore = score;
                             result = temp;
+                            result.SetMZ(mz);
+                            result.SetCharge(charge);
+                            result.SetScan(spectrum.GetScanNum());
                         }
                     }
                 }
@@ -83,6 +74,30 @@ namespace GlycanQuant.Engine.Search.NGlycans
                     results.Add(result);
             }
             return results;
+        }
+
+        public IResult Search(ISpectrum spectrum, IGlycanPeak glycan ,
+            double mz, int charge)
+        {
+
+            ISpectrum spec = spectrumProcessor.Process(spectrum);
+            envelopeProcessor.Init(spec);
+
+            List<IPeak> targets = envelopeProcessor.Search(mz);
+            if (targets.Count == 0)
+                return null;
+
+            SortedDictionary<int, List<IPeak>> clusters =
+                envelopeProcessor.Cluster(mz, charge);
+
+            IResult result = monoisotopicSearcher.Match(glycan, clusters);
+            if (result.Matches().Count == 0)
+                return null;
+            
+            result.SetCharge(charge);
+            result.SetMZ(mz);
+            result.SetScan(spectrum.GetScanNum());
+            return result;
         }
 
         public void SetTolerance(double tol)

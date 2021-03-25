@@ -7,6 +7,37 @@
         mc:Ignorable="d"
         Title="MainWindow" Height="450" Width="800">
     <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition />
+        </Grid.RowDefinitions>
+        <Grid HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Grid.Row="0">
+            <StackPanel Orientation="Horizontal">
+                <Label Content="MS/MS File" HorizontalAlignment="Left" VerticalAlignment="Stretch"  Width="76"/>
+                <TextBox x:Name="displayFileName" HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto" HorizontalAlignment="Left" TextWrapping="Wrap" VerticalAlignment="Stretch" Width="500"/>
+                <Button x:Name="MSMSFileName" Content="..." HorizontalAlignment="Left" Width="30" Click="MSMSFileName_Click" Margin="0,0,0,0.333" Height="25" VerticalAlignment="Bottom" />
+            </StackPanel>
+        </Grid>
+        <Grid HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Grid.Row="1">
+            <StackPanel Orientation="Horizontal">
+                <Label Content="Scan Number" HorizontalAlignment="Stretch" VerticalAlignment="Bottom"/>
+                <Grid Width="20" />
+                <TextBox x:Name="ScanNumber" HorizontalAlignment="Stretch" TextWrapping="Wrap" 
+                         VerticalAlignment="Center" Width="100" Height="20"/>
+                <Grid Width="20" />
+                <Button x:Name="Visualize" Content="Spectrum Display" HorizontalAlignment="Right"
+                        VerticalAlignment="Stretch" Width="120" Click="Visualize_Click" />
+                <Grid Width="10" />
+                <Button x:Name="PeakArea" Content="Peak Area" HorizontalAlignment="Right"
+                        VerticalAlignment="Stretch" Width="75" Click="Area_Click"/>
+            </StackPanel>
+        </Grid>
+        <Grid HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Grid.Row="2">
+            <Canvas Name="canvas"/>
+        </Grid>
 
     </Grid>
 </Window>

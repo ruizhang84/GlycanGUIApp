@@ -12,6 +12,8 @@ namespace GlycanQuant.Engine.Search
     public interface ISpectrumSearch
     {
         List<IResult> Search(ISpectrum spectrum);
+        IResult Search(ISpectrum spectrum, IGlycanPeak glycan,
+            double mz, int charge);
         void SetTolerance(double tol);
         void SetToleranceBy(ToleranceBy by);
         void SetMaxCharge(int charge);

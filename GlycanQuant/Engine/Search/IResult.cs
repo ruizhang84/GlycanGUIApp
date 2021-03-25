@@ -16,5 +16,11 @@ namespace GlycanQuant.Engine.Search
         void SetMatches(List<IPeak> peaks);
         IGlycanPeak Glycan();
         void SetGlycan(IGlycanPeak glycan);
+        int GetScan();
+        void SetScan(int scan);
+        double GetMZ();
+        void SetMZ(double mz);
+        int GetCharge();
+        void SetCharge(int charge);
     }
 }

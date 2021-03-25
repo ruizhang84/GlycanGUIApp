@@ -6,4 +6,9 @@
     <UseWPF>true</UseWPF>
   </PropertyGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\GlycanQuant\GlycanQuant.csproj" />
+    <ProjectReference Include="..\SpectrumDataClassLibrary\SpectrumDataClassLibrary.csproj" />
+  </ItemGroup>
+
 </Project>

@@ -160,12 +160,12 @@ namespace GlycanQuant.Engine.Search.Envelope
         {
             List<SortedDictionary<int, IPeak>> clustered = Combinator(cluster);
             List<double> distr = glycan.GetDistrib();
-            double maxScore = 0;
+            double maxScore = -1;
             List<IPeak> bestPeaks = new List<IPeak>();
             foreach (SortedDictionary<int, IPeak> sequence in clustered)
             {
                 double score = Fit(distr, sequence);
-                if (score > maxScore)
+                if (score >= maxScore)
                 {
                     maxScore = score;
                     bestPeaks = sequence.Select(s => s.Value).ToList();
