@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:GlycanQuantApp"
         mc:Ignorable="d"
-        Title="MainWindow" Height="450" Width="800">
+        Title="MainWindow" Height="450" Width="700">
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
@@ -21,18 +21,21 @@
                 <Button x:Name="MSMSFileName" Content="..." HorizontalAlignment="Left" Width="30" Click="MSMSFileName_Click" Margin="0,0,0,0.333" Height="25" VerticalAlignment="Bottom" />
             </StackPanel>
         </Grid>
-        <Grid HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Grid.Row="1">
+        <Grid HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Grid.Row="1" Margin="0 10 0 0">
             <StackPanel Orientation="Horizontal">
                 <Label Content="Scan Number" HorizontalAlignment="Stretch" VerticalAlignment="Bottom"/>
                 <Grid Width="20" />
                 <TextBox x:Name="ScanNumber" HorizontalAlignment="Stretch" TextWrapping="Wrap" 
                          VerticalAlignment="Center" Width="100" Height="20"/>
+                <TextBlock x:Name="RTtime" HorizontalAlignment="Stretch" TextWrapping="Wrap" 
+                         VerticalAlignment="Center" Margin="10 0 0 0">Retention time</TextBlock>
+                <Grid Width="20" />
+                <Button x:Name="PeakArea" Content="Peak Area" HorizontalAlignment="Right"
+                        VerticalAlignment="Stretch" Width="75" Click="Area_Click" Visibility="Collapsed"/>
                 <Grid Width="20" />
                 <Button x:Name="Visualize" Content="Spectrum Display" HorizontalAlignment="Right"
                         VerticalAlignment="Stretch" Width="120" Click="Visualize_Click" />
-                <Grid Width="10" />
-                <Button x:Name="PeakArea" Content="Peak Area" HorizontalAlignment="Right"
-                        VerticalAlignment="Stretch" Width="75" Click="Area_Click"/>
+
             </StackPanel>
         </Grid>
         <Grid HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Grid.Row="2">

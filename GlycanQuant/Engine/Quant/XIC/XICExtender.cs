@@ -8,29 +8,26 @@ using System.Threading.Tasks;
 
 namespace GlycanQuant.Engine.Quant.XIC
 {
-    public class NGlycanXIC : IXIC
+    public class XICExtender
     {
-        IAreaCalculator calculator;
         ISpectrumReader spectrumReader;
         ISpectrumSearch spectrumSearcher;
 
-        public NGlycanXIC(IAreaCalculator calculator, 
-            ISpectrumReader spectrumReader, ISpectrumSearch spectrumSearcher)
+        public XICExtender(ISpectrumReader spectrumReader, ISpectrumSearch spectrumSearcher)
         {
-            this.calculator = calculator;
             this.spectrumReader = spectrumReader;
             this.spectrumSearcher = spectrumSearcher;
         }
 
-        public List<XICPeak> Find(IResult glycan)
+        public List<IResult> Find(IResult glycan)
         {
-            List<XICPeak> results = new List<XICPeak>();
+            List<IResult> results = new List<IResult>();
 
             int scan = glycan.GetScan();
             double mz = glycan.GetMZ();
             int charge = glycan.GetCharge();
 
-            for (int i = scan-1; i > 0; i--)
+            for (int i = scan - 1; i > 0; i--)
             {
                 if (spectrumReader.GetMSnOrder(i) != 1)
                     continue;
@@ -38,12 +35,11 @@ namespace GlycanQuant.Engine.Quant.XIC
                 IResult temp = spectrumSearcher.Search(spectrum, glycan.Glycan(), mz, charge);
                 if (temp == null)
                     break;
-                results.Add(new XICPeak(spectrumReader.GetRetentionTime(i),
-                    temp.GetMZ()));
+                results.Add(temp);
             }
 
             results.Reverse();
-            results.Add(new XICPeak(spectrumReader.GetRetentionTime(scan), mz));
+            results.Add(glycan);
 
             for (int i = scan + 1; i < spectrumReader.GetLastScan(); i++)
             {
@@ -53,18 +49,9 @@ namespace GlycanQuant.Engine.Quant.XIC
                 IResult temp = spectrumSearcher.Search(spectrum, glycan.Glycan(), mz, charge);
                 if (temp == null)
                     break;
-                results.Add(new XICPeak(spectrumReader.GetRetentionTime(i),
-                    temp.GetMZ()));
+                results.Add(temp);
             }
             return results;
-        }
-
-        public double Area(IResult glycan) 
-        {
-            List<XICPeak> results = Find(glycan);
-            List<double> rt = results.Select(p => p.RTime).ToList();
-            List<double> Y = results.Select(p => p.Intensity).ToList();
-            return calculator.Area(rt, Y);
         }
     }
 }
