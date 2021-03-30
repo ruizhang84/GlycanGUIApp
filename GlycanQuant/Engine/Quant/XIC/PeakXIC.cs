@@ -95,7 +95,7 @@ namespace GlycanQuant.Engine.Quant.XIC
         private bool UpdateIntensity(int index, List<IPeak> peaks,
             double mz, ref double intensity)
         {
-            IPeak peak = peaks[j];
+            IPeak peak = peaks[index];
             if (Math.Abs(mz - peak.GetMZ()) > mzRange)
                 return false;
             intensity += peak.GetIntensity();
@@ -115,7 +115,7 @@ namespace GlycanQuant.Engine.Quant.XIC
 
             int index = BinarySearch.Search(peaks, mz, tol, by);
             if (index < 0)
-                return false;
+                return true;
 
             for (int j = index; j > 0; j--)
             {

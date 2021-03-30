@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:GlycanQuantApp"
         mc:Ignorable="d"
-        Title="MainWindow" Height="450" Width="700">
+        Title="MainWindow" Height="500" Width="700">
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
@@ -24,21 +24,34 @@
         <Grid HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Grid.Row="1" Margin="0 10 0 0">
             <StackPanel Orientation="Horizontal">
                 <Label Content="Scan Number" HorizontalAlignment="Stretch" VerticalAlignment="Bottom"/>
-                <Grid Width="20" />
+                <Grid Width="10" />
                 <TextBox x:Name="ScanNumber" HorizontalAlignment="Stretch" TextWrapping="Wrap" 
-                         VerticalAlignment="Center" Width="100" Height="20"/>
+                         VerticalAlignment="Center" Width="50" Height="20"/>
+                <Grid Width="20" />
+                <ScrollBar  x:Name="ScanScroll" Orientation="Horizontal" Width ="200"
+                           ValueChanged="ScrollBar_ValueChanged"/>
                 <TextBlock x:Name="RTtime" HorizontalAlignment="Stretch" TextWrapping="Wrap" 
                          VerticalAlignment="Center" Margin="10 0 0 0">Retention time</TextBlock>
+            </StackPanel>
+        </Grid>
+        <Grid  HorizontalAlignment="Left" VerticalAlignment="Stretch" Margin="10" Grid.Row="2">
+            <ProgressBar Height="25" Width="600" Minimum="0" Maximum="1000" Name="ReadingStatus"/>
+        </Grid>
+        <Grid HorizontalAlignment="Stretch" VerticalAlignment="Center" Grid.Row="3" Margin="0 10 0 0">
+            <StackPanel Orientation="Horizontal">
+                <Grid Width="10" />
+                <Button x:Name="PeakArea" Content="Peak Area" HorizontalAlignment="Left"
+                        VerticalAlignment="Center" Width="75" Click="Area_Click" Visibility="Collapsed" />
                 <Grid Width="20" />
-                <Button x:Name="PeakArea" Content="Peak Area" HorizontalAlignment="Right"
-                        VerticalAlignment="Stretch" Width="75" Click="Area_Click" Visibility="Collapsed"/>
+                <Button x:Name="normalize"  Content="Normalize" HorizontalAlignment="Left" 
+                    VerticalAlignment="Stretch" Width="75" Click="Normalize_Click" />
                 <Grid Width="20" />
-                <Button x:Name="Visualize" Content="Spectrum Display" HorizontalAlignment="Right"
-                        VerticalAlignment="Stretch" Width="120" Click="Visualize_Click" />
+                <Button x:Name="Visualize" Content="Spectrum Display" HorizontalAlignment="Left"
+                        VerticalAlignment="Center" Width="120" Click="Visualize_Click" />
 
             </StackPanel>
         </Grid>
-        <Grid HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Grid.Row="2">
+        <Grid HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Grid.Row="4">
             <Canvas Name="canvas"/>
         </Grid>
 

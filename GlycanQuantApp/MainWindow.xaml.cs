@@ -12,9 +12,12 @@ using Microsoft.Win32;
 using SpectrumData;
 using SpectrumData.Reader;
 using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
@@ -25,6 +28,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using System.Windows.Threading;
 
 namespace GlycanQuantApp
 {
@@ -40,8 +44,11 @@ namespace GlycanQuantApp
         ISpectrumSearch spectrumSearch { get; set; }
         List<IGlycanPeak> glycans { get; set; }
 
-        double tolerance = 10;
-        ToleranceBy by = ToleranceBy.PPM;
+        List<int> validScan = new List<int>();
+
+        private DrawingVisualizer visualizer = new DrawingVisualizer();
+        private NormalizerEngine engine = new NormalizerEngine();
+        private int readingCounter;
 
         public MainWindow()
         {
@@ -75,85 +82,19 @@ namespace GlycanQuantApp
                 displayFileName.SetBinding(TextBox.TextProperty, fileNameBinding);
                 path = displayFileName.Text;
                 spectrumReader.Init(path);
+
+                int start = spectrumReader.GetFirstScan();
+                int end = spectrumReader.GetLastScan();
+
+                for(int i = start; i <= end; i++)
+                {
+                    if (spectrumReader.GetMSnOrder(i) == 1)
+                        validScan.Add(i);
+                }
+                ScanScroll.Minimum = 0;
+                ScanScroll.Maximum = validScan.Count-1;
             }
         }
-
-        private int BinarySearchPoints(List<double> peaks, double mz)
-        {
-            int start = 0;
-            int end = peaks.Count - 1;
-
-            while (start + 1 < end)
-            {
-                int mid = end + (start - end) / 2;
-                if (Math.Abs(peaks[mid] - mz) < 0.001)
-                {
-                    return mid;
-                }
-                else if (peaks[mid] > mz)
-                {
-                    end = mid - 1;
-                }
-                else
-                {
-                    start = mid;
-                }
-            }
-
-            return start;
-        }
-
-        private DrawingVisual CreateDrawingVisual(ISpectrum spectrum, List<IResult> results,
-            double x1 = 40, double y1 = 40, double x2 = 660, int y2 = 300)
-        {
-            DrawingVisual drawingVisual = new DrawingVisual();
-            // Create a drawing and draw it in the DrawingContext.
-            using (DrawingContext drawingContext = drawingVisual.RenderOpen())
-            {
-                double delta = 10;
-                Pen pen = new Pen(Brushes.Black, 1);
-                Rect rect =
-                    new Rect(new Point(x1 - delta, y1 - delta), 
-                    new Point(x2 + delta, y2 + delta)); // range of (600, 260)
-                drawingContext.DrawRectangle(Brushes.Transparent, pen, rect);
-
-                // process peaks
-                List<IPeak> peaks = spectrum.GetPeaks();
-                double deltaX = x2 - x1;
-                double deltaY = y2 - y1;
-                double minX = peaks.Min(p => p.GetMZ());
-                double maxX = peaks.Max(p => p.GetMZ());
-                List<double> x = peaks.Select(p => (p.GetMZ() - minX) / (maxX - minX) * deltaX + x1).ToList();
-                double maxY = peaks.Max(p => p.GetIntensity());
-                List<double> y = peaks.Select(p => y2 - p.GetIntensity() / maxY * deltaY).ToList();
-
-                // draw points
-                Pen p = new Pen(Brushes.Red, 3);
-                List<double> mzList = results.Select(r => r.GetMZ()).ToList();
-
-                for (int i = 0; i < mzList.Count; i++)
-                {
-                    double xi = (mzList[i] - minX) / (maxX - minX) * deltaX + x1;
-                    double yi = y[BinarySearchPoints(mzList, xi)];
-                    Point point = new Point(xi, yi);
-                    drawingContext.DrawEllipse(Brushes.Red, p, point, 1, 1);
-                }
-
-                // draw curve
-                List<Point> points = new List<Point>();
-                for (int i = 0; i < x.Count; i++)
-                {
-                    points.Add(new Point(x[i], y[i]));
-                }
-                Pen curve = new Pen(Brushes.Blue, 1);
-                for (int i = 0; i < points.Count - 1; i++)
-                {
-                    drawingContext.DrawLine(curve, points[i], points[i + 1]);
-                }
-            }
-            return drawingVisual;
-        }
-
         private void Visualize_Click(object sender, RoutedEventArgs e)
         {
             if (path.Length == 0)
@@ -169,7 +110,11 @@ namespace GlycanQuantApp
             {
                 ISpectrum spectrum = spectrumProcessor.Process(spectrumReader.GetSpectrum(scan));
                 double rt = spectrumReader.GetRetentionTime(scan);
-                RTtime.Text = "Retention time: " + Math.Round(rt, 2).ToString() + " (min)";
+                double index = Math.Round(engine.Normalize(rt), 2);
+                string output = "Retention time: " + Math.Round(rt, 2).ToString() + " (min) ";
+                if (index > 0)
+                    output += "GUI index " + index.ToString();
+                RTtime.Text = output;
                 // search
                 List<IResult> results = spectrumSearch.Search(spectrum);
 
@@ -177,7 +122,7 @@ namespace GlycanQuantApp
                 canvas.Children.Clear();
                 if (spectrum.GetPeaks().Count > 0)
                     canvas.Children.Add(new VisualHost
-                    { Visual = CreateDrawingVisual(spectrum, results) });
+                    { Visual = visualizer.CreateDrawingVisual(spectrum, results) });
                 PeakArea.Visibility = Visibility.Visible;
 
             }
@@ -189,7 +134,6 @@ namespace GlycanQuantApp
                 return;
             }
         }
-
         private void Area_Click(object sender, RoutedEventArgs e)
         {
             if (path.Length == 0)
@@ -205,33 +149,95 @@ namespace GlycanQuantApp
             {
                 ISpectrum spectrum = spectrumReader.GetSpectrum(scan);
                 List<IResult> results = spectrumSearch.Search(spectrum);
+                double rt = spectrumReader.GetRetentionTime(scan);
 
+                ConcurrentDictionary<IResult, double> quant = new ConcurrentDictionary<IResult, double>();
                 Parallel.ForEach(results, (r) =>
                 {
-                    IResultFactory factory = new NGlycanResultFactory();
-                    EnvelopeProcess envelopeProcess = new EnvelopeProcess(tolerance, by);
-                    MonoisotopicSearcher monoisotopicSearcher = new MonoisotopicSearcher(factory);
-                    IProcess spectrumProcess = new LocalNeighborPicking();
-                    ISpectrumSearch search = new NGlycanSpectrumSearch(glycans,
-                        spectrumProcess, envelopeProcess, monoisotopicSearcher);
-
-                    IAreaCalculator areaCalculator = new TrapezoidalRule();
-                    IXIC xicer = new NGlycanXIC(areaCalculator, spectrumReader, search);
-
-                    Console.WriteLine(r.Glycan().GetGlycan().Name());
-
+                    //IAreaCalculator areaCalculator = new TrapezoidalRule();
+                    //IXIC xicer = new PeakXIC(areaCalculator, spectrumReader, 0.01, ToleranceBy.Dalton);
+                    IXIC xicer = new TIQ3XIC(spectrumReader, 0.01, ToleranceBy.Dalton);
                     double area = xicer.Area(r);
-                    Console.WriteLine(area);
+
+                    quant[r] = area;
                 });
 
+                string outputPath = System.IO.Path.Combine(System.IO.Path.GetDirectoryName(path),  
+                    System.IO.Path.GetFileNameWithoutExtension(path) + ".csv");
+                using (FileStream ostrm = new FileStream(outputPath, FileMode.OpenOrCreate, FileAccess.Write))
+                {
+                    using (StreamWriter writer = new StreamWriter(ostrm))
+                    {
+                        writer.WriteLine("scan,time,glycan,area");
+                        foreach(IResult r in quant.Keys)
+                        {
+                            List<string> output = new List<string>()
+                            {
+                                scan.ToString(), rt.ToString(), 
+                                r.Glycan().GetGlycan().Name(), quant[r].ToString()
+                            };
+
+                            writer.WriteLine(string.Join(",", output));
+                        }
+                        writer.Flush();
+                    }
+                }
             }
             else
             {
                 MessageBox.Show("Please input a valid scan number!");
                 return;
             }
+        }
+        private async void Normalize_Click(object sender, RoutedEventArgs e)
+        {
+            if (path.Length == 0)
+            {
+                MessageBox.Show("Please input the spectrum file (*.Raw) path!");
+                return;
+            }
+            normalize.IsEnabled = false;
+            readingCounter = 0;
+            Counter counter = new Counter();
+            counter.progressChange += ReadProgressChanged;
 
+            spectrumReader.Init(path);
 
+            await Task.Run(() =>
+            {
+                engine.Run(spectrumReader, counter);
+
+            });
+        }
+
+        private void Readingprogress(int total)
+        {
+            Dispatcher.BeginInvoke(
+                DispatcherPriority.Normal,
+                new ThreadStart(() =>
+                {
+                    ReadingStatus.Value = readingCounter * 1.0 / total * 1000.0;
+                }));
+        }
+        private void ReadProgressChanged(object sender, ProgressingEventArgs e)
+        {
+            Interlocked.Increment(ref readingCounter);
+            Readingprogress(e.Total);
+        }
+        private void ScrollBar_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
+        {
+            if (path.Length != 0)
+            {
+                int scan = validScan[(int) e.NewValue];
+
+                ScanNumber.Text = scan.ToString();
+                double rt = spectrumReader.GetRetentionTime(scan);
+                double index = Math.Round(engine.Normalize(rt), 2);
+                string output = "Retention time: " + Math.Round(rt, 2).ToString() + " (min) ";
+                if (index > 0)
+                   output += "GUI index " + index.ToString();
+                RTtime.Text = output;
+            }
         }
     }
 

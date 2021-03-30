@@ -11,6 +11,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "UnitTestProject", "UnitTest
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GlycanQuant", "GlycanQuant\GlycanQuant.csproj", "{B221444C-20D9-40B5-98B7-4745AC354979}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GlycanGUIClassLibrary", "GlycanGUIClassLibrary\GlycanGUIClassLibrary.csproj", "{C5902A7F-9C14-44F8-9AB7-E938C501DBEE}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -33,6 +35,10 @@ Global
 		{B221444C-20D9-40B5-98B7-4745AC354979}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{B221444C-20D9-40B5-98B7-4745AC354979}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{B221444C-20D9-40B5-98B7-4745AC354979}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C5902A7F-9C14-44F8-9AB7-E938C501DBEE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C5902A7F-9C14-44F8-9AB7-E938C501DBEE}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C5902A7F-9C14-44F8-9AB7-E938C501DBEE}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C5902A7F-9C14-44F8-9AB7-E938C501DBEE}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
