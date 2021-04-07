@@ -18,6 +18,7 @@ using SpectrumData.Reader;
 using NUnit.Framework;
 using GlycanQuant.Engine.Quant.XIC;
 using GlycanQuant.Engine.Quant;
+using System.IO;
 
 namespace UnitTestProject
 {
@@ -32,32 +33,34 @@ namespace UnitTestProject
 
             ISpectrumReader spectrumReader = new ThermoRawSpectrumReader();
             spectrumReader.Init(@"C:\Users\iruiz\Downloads\Serum_dextrinspiked_C18_10162018_1.raw");
-            int scan = 3474;
-            ISpectrum spectrum = spectrumReader.GetSpectrum(scan);
 
-
-            IResultFactory factory = new NGlycanResultFactory();
-            EnvelopeProcess envelopeProcess = new EnvelopeProcess(10, ToleranceBy.PPM);
-            MonoisotopicSearcher monoisotopicSearcher = new MonoisotopicSearcher(factory);
-            IProcess spectrumProcess = new LocalNeighborPicking();
-            ISpectrumSearch spectrumSearch = new NGlycanSpectrumSearch(glycans,
-                spectrumProcess, envelopeProcess, monoisotopicSearcher);
-
-            List<IResult> results = spectrumSearch.Search(spectrum);
-
-            IAreaCalculator areaCalculator = new TrapezoidalRule();
-            IXIC xicer = new NGlycanXIC(areaCalculator, spectrumReader, spectrumSearch);
-            foreach (IResult r in results)
+            using (StreamWriter file = new("WriteLines2.txt"))
             {
-                Console.WriteLine(r.Glycan().GetGlycan().Name());
+                file.WriteLine("glycan,area");
+                for (int scan = spectrumReader.GetFirstScan(); scan <= spectrumReader.GetLastScan(); scan++)
+                {
+                    if (spectrumReader.GetMSnOrder(scan) != 1) continue;
+                    ISpectrum spectrum = spectrumReader.GetSpectrum(scan);
 
-                double area = xicer.Area(r);
-                Console.WriteLine(area);
+                    IResultFactory factory = new NGlycanResultFactory();
+                    EnvelopeProcess envelopeProcess = new EnvelopeProcess(10, ToleranceBy.PPM);
+                    MonoisotopicSearcher monoisotopicSearcher = new MonoisotopicSearcher(factory);
+                    IProcess spectrumProcess = new LocalNeighborPicking();
+                    ISpectrumSearch spectrumSearch = new NGlycanSpectrumSearch(glycans,
+                        spectrumProcess, envelopeProcess, monoisotopicSearcher);
 
+                    List<IResult> results = spectrumSearch.Search(spectrum);
 
-                break;
+                    IAreaCalculator areaCalculator = new TrapezoidalRule();
+                    //IXIC xicer = new TIQ3XIC(spectrumReader, 0.01, ToleranceBy.Dalton);
+                    IXIC xicer = new PeakXIC(areaCalculator, spectrumReader, 0.01, ToleranceBy.Dalton);
+                    foreach (IResult r in results)
+                    {
+                        double area = xicer.Area(r);
+                        file.WriteLine(r.Glycan().GetGlycan().Name() + "," + area.ToString());
+                    }
+                }
             }
-
             Assert.Pass();
         }
 

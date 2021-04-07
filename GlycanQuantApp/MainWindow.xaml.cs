@@ -154,11 +154,8 @@ namespace GlycanQuantApp
                 ConcurrentDictionary<IResult, double> quant = new ConcurrentDictionary<IResult, double>();
                 Parallel.ForEach(results, (r) =>
                 {
-                    //IAreaCalculator areaCalculator = new TrapezoidalRule();
-                    //IXIC xicer = new PeakXIC(areaCalculator, spectrumReader, 0.01, ToleranceBy.Dalton);
                     IXIC xicer = new TIQ3XIC(spectrumReader, 0.01, ToleranceBy.Dalton);
                     double area = xicer.Area(r);
-
                     quant[r] = area;
                 });
 

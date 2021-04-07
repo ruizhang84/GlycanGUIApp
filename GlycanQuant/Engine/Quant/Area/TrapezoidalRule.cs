@@ -16,15 +16,11 @@ namespace GlycanQuant.Engine.Quant
             if (x.Count != y.Count || x.Count < 2)
                 return sums;
 
-            for(int i = 0; i < x.Count; i++)
+            for(int i = 1; i < x.Count; i++)
             {
-                if (i == 0 || i == x.Count - 1)
-                    sums += y[i];
-                else
-                    sums += 2 * y[i];
+                sums += (y[i] + y[i - 1]) * (x[i] - x[i - 1]) / 2;
             }
-            return (x[x.Count-1] - x[0]) / x.Count * sums;
-
+            return sums;
         }
 
     }

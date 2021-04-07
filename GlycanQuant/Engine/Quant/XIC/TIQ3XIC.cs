@@ -28,33 +28,54 @@ namespace GlycanQuant.Engine.Quant.XIC
             int scan = glycan.GetScan();
             int charge = glycan.GetCharge();
 
-            List<int> delta = new List<int>() { -2, -1, 1, 2 };
-            List<double> topArea = new List<double>();
-            for (int i = Math.Max(spectrumReader.GetFirstScan(), scan - 2);
-                i < Math.Min(scan + 3, spectrumReader.GetLastScan()); i++)
+           // get neighbors
+            List<ISpectrum> neighbors = new List<ISpectrum>();
+            int nextScan = scan;
+            while (nextScan > spectrumReader.GetFirstScan())
             {
-                if (spectrumReader.GetMSnOrder(i) != 1)
-                    continue;
-                ISpectrum spetrum = spectrumReader.GetSpectrum(i);
-                List<IPeak> top = new List<IPeak>();
+                if (spectrumReader.GetMSnOrder(nextScan) == 1)
+                {
+                    ISpectrum spectrum = spectrumReader.GetSpectrum(nextScan);
+                    int index = BinarySearch.Search(spectrum.GetPeaks(), mz, tol, by);
+                    if (index < 0) break;
 
-                int index = BinarySearch.Search(spetrum.GetPeaks(), mz, tol, by);
-                if (index < 0)
-                    continue;
-                top.Add(spetrum.GetPeaks()[index]);
+                    neighbors.Add(spectrum);
+                }
+                nextScan--;
+            }
+            nextScan = scan + 1;
+            while (nextScan <= spectrumReader.GetLastScan())
+            {
+                if (spectrumReader.GetMSnOrder(nextScan) == 1)
+                {
+                    ISpectrum spectrum = spectrumReader.GetSpectrum(nextScan);
+                    int index = BinarySearch.Search(spectrum.GetPeaks(), mz, tol, by);
+                    if (index < 0) break;
+
+                    neighbors.Add(spectrum);
+                }
+                nextScan++;
+            }
+
+            // each neighbor get top 3 peaks
+            List<double> topArea = new List<double>();
+            List<int> delta = new List<int>() { -2, -1, 0, 1, 2 };
+            foreach (ISpectrum spetrum in neighbors)
+            {
+                List<IPeak> top = new List<IPeak>();
 
                 foreach (int j in delta)
                 {
-                    index = BinarySearch.Search(spetrum.GetPeaks(), mz + 1.0 / charge * j, tol, by);
+                    int index = BinarySearch.BestSearch(spetrum.GetPeaks(), mz + 1.0 / charge * j, tol, by);
                     if (index < 0)
                         continue;
                     top.Add(spetrum.GetPeaks()[index]);
                 }
-                topArea.Add(top.OrderBy(p => p.GetIntensity()).
+                topArea.Add(top.OrderByDescending(p => p.GetIntensity()).
                     Take(3).Select(p => p.GetIntensity()).Sum());
             }
 
-            return topArea.OrderBy(a => a).Take(3).Sum();
+            return topArea.OrderByDescending(a => a).Take(3).Sum();
         }
     }
 }

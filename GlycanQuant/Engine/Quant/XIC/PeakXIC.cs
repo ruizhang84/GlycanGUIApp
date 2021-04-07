@@ -26,10 +26,9 @@ namespace GlycanQuant.Engine.Quant.XIC
         ISpectrumReader spectrumReader;
         double tol;
         ToleranceBy by;
-        double mzRange = 1.0;
+        double mzRange = 0.1;
         double rtTolerance = 1.0;
         double ratio = 0.5;
-
 
         public PeakXIC(IAreaCalculator calculator,
             ISpectrumReader spectrumReader, double tol, ToleranceBy by)
@@ -39,6 +38,7 @@ namespace GlycanQuant.Engine.Quant.XIC
             this.tol = tol;
             this.by = by;
         }
+
         public double Area(IResult glycan)
         {
             List<XICPeak> peaks = Find(glycan);
@@ -63,22 +63,31 @@ namespace GlycanQuant.Engine.Quant.XIC
             {
                 if (peaks[i].Intensity > cutoff)
                     left = i;
+                else
+                    break;
             }
             int right = maxIndex;
             for(int i = maxIndex; i < peaks.Count; i++)
             {
                 if (peaks[i].Intensity > cutoff)
                     right = i;
+                else
+                    break;
             }
+            // local minimum
             while (left > 0)
             {
                 if (peaks[left].Intensity > peaks[left - 1].Intensity)
                     left--;
+                else
+                    break;
             }
             while (right < peaks.Count - 1)
             {
                 if (peaks[right].Intensity > peaks[right + 1].Intensity)
                     right++;
+                else
+                    break;
             }
 
             List<double> X = new List<double>();
@@ -99,7 +108,6 @@ namespace GlycanQuant.Engine.Quant.XIC
             if (Math.Abs(mz - peak.GetMZ()) > mzRange)
                 return false;
             intensity += peak.GetIntensity();
-
             return true;
         }
 
@@ -111,12 +119,11 @@ namespace GlycanQuant.Engine.Quant.XIC
                 return false;
 
             List<IPeak> peaks = spectrumReader.GetSpectrum(scan).GetPeaks();
-            double intensity = 0;
-
-            int index = BinarySearch.Search(peaks, mz, tol, by);
+            int index = BinarySearch.BestSearch(peaks, mz, tol, by);
             if (index < 0)
-                return true;
+                return false;
 
+            double intensity = 0;
             for (int j = index; j > 0; j--)
             {
                 bool updated = UpdateIntensity(j, peaks, mz, ref intensity);
@@ -130,7 +137,7 @@ namespace GlycanQuant.Engine.Quant.XIC
             }
 
             results.Add(new XICPeak(rtTemp, intensity));
-            return false;
+            return true;
         }
 
         public List<XICPeak> Find(IResult glycan)
@@ -142,6 +149,7 @@ namespace GlycanQuant.Engine.Quant.XIC
             List<XICPeak> results = new List<XICPeak>();
             for (int i = scan; i > 0; i--)
             {
+                if (spectrumReader.GetMSnOrder(i) != 1) continue;
                 bool updated = UpdateXIC(mz, i, rt, ref results);
                 if (!updated) break;
             }
@@ -150,6 +158,7 @@ namespace GlycanQuant.Engine.Quant.XIC
 
             for (int i = scan + 1; i < spectrumReader.GetLastScan(); i++)
             {
+                if (spectrumReader.GetMSnOrder(i) != 1) continue;
                 bool updated = UpdateXIC(mz, i, rt, ref results);
                 if (!updated) break;
             }
