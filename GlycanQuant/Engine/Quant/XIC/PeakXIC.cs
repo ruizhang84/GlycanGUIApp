@@ -39,67 +39,6 @@ namespace GlycanQuant.Engine.Quant.XIC
             this.by = by;
         }
 
-        public double Area(IResult glycan)
-        {
-            List<XICPeak> peaks = Find(glycan);
-
-            // local max
-            int maxIndex = 0;
-            double maxValue = 0;
-            for(int i = 0; i < peaks.Count; i++)
-            {
-                if (peaks[i].Intensity > maxValue)
-                {
-                    maxValue = peaks[i].Intensity;
-                    maxIndex = i;
-                }
-            }
-
-
-            double cutoff = ratio * maxValue;
-            // left and right bound
-            int left = maxIndex;
-            for (int i = maxIndex; i >= 0; i--)
-            {
-                if (peaks[i].Intensity > cutoff)
-                    left = i;
-                else
-                    break;
-            }
-            int right = maxIndex;
-            for(int i = maxIndex; i < peaks.Count; i++)
-            {
-                if (peaks[i].Intensity > cutoff)
-                    right = i;
-                else
-                    break;
-            }
-            // local minimum
-            while (left > 0)
-            {
-                if (peaks[left].Intensity > peaks[left - 1].Intensity)
-                    left--;
-                else
-                    break;
-            }
-            while (right < peaks.Count - 1)
-            {
-                if (peaks[right].Intensity > peaks[right + 1].Intensity)
-                    right++;
-                else
-                    break;
-            }
-
-            List<double> X = new List<double>();
-            List<double> Y = new List<double>();
-            for(int i = left; i <= right; i++)
-            {
-                X.Add(peaks[i].RTime);
-                Y.Add(peaks[i].Intensity);
-            }
-
-            return calculator.Area(X, Y);
-        }
 
         private bool UpdateIntensity(int index, List<IPeak> peaks,
             double mz, ref double intensity)
@@ -111,7 +50,7 @@ namespace GlycanQuant.Engine.Quant.XIC
             return true;
         }
 
-        private bool UpdateXIC(double mz, int scan, double rt, 
+        private bool UpdateXIC(double mz, int scan, double rt,
             ref List<XICPeak> results)
         {
             double rtTemp = spectrumReader.GetRetentionTime(scan);
@@ -163,6 +102,86 @@ namespace GlycanQuant.Engine.Quant.XIC
                 if (!updated) break;
             }
             return results;
+        }
+
+        double Area(List<XICPeak> peaks)
+        {
+            // local max
+            int maxIndex = 0;
+            double maxValue = 0;
+            for (int i = 0; i < peaks.Count; i++)
+            {
+                if (peaks[i].Intensity > maxValue)
+                {
+                    maxValue = peaks[i].Intensity;
+                    maxIndex = i;
+                }
+            }
+
+
+            double cutoff = ratio * maxValue;
+            // left and right bound
+            int left = maxIndex;
+            for (int i = maxIndex; i >= 0; i--)
+            {
+                if (peaks[i].Intensity > cutoff)
+                    left = i;
+                else
+                    break;
+            }
+            int right = maxIndex;
+            for (int i = maxIndex; i < peaks.Count; i++)
+            {
+                if (peaks[i].Intensity > cutoff)
+                    right = i;
+                else
+                    break;
+            }
+            // local minimum
+            while (left > 0)
+            {
+                if (peaks[left].Intensity > peaks[left - 1].Intensity)
+                    left--;
+                else
+                    break;
+            }
+            while (right < peaks.Count - 1)
+            {
+                if (peaks[right].Intensity > peaks[right + 1].Intensity)
+                    right++;
+                else
+                    break;
+            }
+
+            List<double> X = new List<double>();
+            List<double> Y = new List<double>();
+            for (int i = left; i <= right; i++)
+            {
+                X.Add(peaks[i].RTime);
+                Y.Add(peaks[i].Intensity);
+            }
+
+            return calculator.Area(X, Y);
+        }
+
+        public double Area(IResult glycan)
+        {
+            List<XICPeak> peaks = Find(glycan);
+            return Area(peaks);
+        }
+
+        public double Area(SelectResult result)
+        {
+            List<XICPeak> peaks = new List<XICPeak>();
+            foreach(IResult r in result.Results)
+            {
+                double intensity = r.Matches().Sum(p => p.GetIntensity());
+                int scan = r.GetScan();
+                double rt = spectrumReader.GetRetentionTime(scan);
+                peaks.Add(new XICPeak(rt, intensity));
+            }
+
+            return Area(peaks);
         }
     }
 }

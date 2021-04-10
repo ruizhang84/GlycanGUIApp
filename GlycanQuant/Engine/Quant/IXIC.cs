@@ -12,5 +12,8 @@ namespace GlycanQuant.Engine.Quant
     public interface IXIC
     {
         double Area(IResult glycan);
+
+        double Area(SelectResult result);
+
     }
 }

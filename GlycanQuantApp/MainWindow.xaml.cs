@@ -62,9 +62,8 @@ namespace GlycanQuantApp
             IResultFactory factory = new NGlycanResultFactory();
             EnvelopeProcess envelopeProcess = new EnvelopeProcess(10, ToleranceBy.PPM);
             MonoisotopicSearcher monoisotopicSearcher = new MonoisotopicSearcher(factory);
-            IProcess spectrumProcess = new LocalNeighborPicking();
             spectrumSearch = new NGlycanSpectrumSearch(glycans,
-                spectrumProcess, envelopeProcess, monoisotopicSearcher);
+                spectrumProcessor, envelopeProcess, monoisotopicSearcher);
         }
 
         private void MSMSFileName_Click(object sender, RoutedEventArgs e)
@@ -150,6 +149,8 @@ namespace GlycanQuantApp
                 ISpectrum spectrum = spectrumReader.GetSpectrum(scan);
                 List<IResult> results = spectrumSearch.Search(spectrum);
                 double rt = spectrumReader.GetRetentionTime(scan);
+                double index = Math.Round(engine.Normalize(rt), 2);
+                double area = engine.Area(spectrumReader);
 
                 ConcurrentDictionary<IResult, double> quant = new ConcurrentDictionary<IResult, double>();
                 Parallel.ForEach(results, (r) =>
@@ -165,13 +166,16 @@ namespace GlycanQuantApp
                 {
                     using (StreamWriter writer = new StreamWriter(ostrm))
                     {
-                        writer.WriteLine("scan,time,glycan,area");
+                        writer.WriteLine("scan,time,GUI,glycan,mz,area,factor");
                         foreach(IResult r in quant.Keys)
                         {
                             List<string> output = new List<string>()
                             {
                                 scan.ToString(), rt.ToString(), 
-                                r.Glycan().GetGlycan().Name(), quant[r].ToString()
+                                index > 0? index.ToString():"0",
+                                r.Glycan().GetGlycan().Name(), r.GetMZ().ToString(),
+                                quant[r].ToString(),
+                                area > 0? (quant[r]/area).ToString():"0"
                             };
 
                             writer.WriteLine(string.Join(",", output));
@@ -236,6 +240,7 @@ namespace GlycanQuantApp
                 RTtime.Text = output;
             }
         }
+
     }
 
     public class VisualHost : UIElement

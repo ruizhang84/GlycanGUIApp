@@ -2,6 +2,7 @@
 using GlycanGUIClassLibrary.Algorithm.CurveFitting;
 using GlycanGUIClassLibrary.Algorithm.GUIFinder;
 using GlycanGUIClassLibrary.Algorithm.GUISequencer;
+using GlycanQuant.Engine.Quant;
 using GlycanQuant.Spectrum.Process;
 using GlycanQuant.Spectrum.Process.PeakPicking;
 using SpectrumData;
@@ -23,6 +24,27 @@ namespace GlycanQuantApp
         private bool initialized = false;
         public List<double> Retention { get; set; } = new List<double>();
         public List<double> Guis { get; set; } = new List<double>();
+
+        protected List<GUI> GuiPoints = new List<GUI>();
+        IAreaCalculator areaCalculator = new TrapezoidalRule();
+
+        public double Area(ISpectrumReader reader)
+        {
+            if (!initialized) return 0;
+
+            List<double> X = new List<double>();
+            List<double> Y = new List<double>();
+            
+            foreach (GUI g in GuiPoints.OrderBy(p => p.Scan))
+            {
+                double rt = reader.GetRetentionTime(g.Scan);
+                double intensity = g.Peak.GetIntensity();
+                X.Add(rt);
+                Y.Add(intensity);
+            }
+
+            return areaCalculator.Area(X, Y);
+        }
 
         public void Run(ISpectrumReader reader, Counter counter)
         {
@@ -48,12 +70,12 @@ namespace GlycanQuantApp
                 pointMaps.OrderBy(p => p.Key).Select(p => p.Value).ToList();
 
             IGUISequencer sequencer = new DynamicProgrammingSequencer();
-            List<GUI> guiPoints = sequencer.Choose(points);
+            GuiPoints = sequencer.Choose(points);
 
             Fitter = new PolynomialFitting();
 
             Dictionary<int, GUI> guiSelected = new Dictionary<int, GUI>();
-            foreach (GUI gui in guiPoints)
+            foreach (GUI gui in GuiPoints)
             {
                 if (guiSelected.ContainsKey(gui.Unit))
                 {
@@ -71,15 +93,14 @@ namespace GlycanQuantApp
             Retention.Clear();
             Guis.Clear();
 
-            List<GUI> looped = guiSelected.Values.OrderBy(g => g.Scan).ToList();
+            List<GUI> guiChoice = guiSelected.Values.OrderBy(g => g.Scan).ToList();
 
-            foreach (GUI gui in looped)
+            foreach (GUI gui in guiChoice)
             {
                 int scan = gui.Scan;
                 double time = reader.GetRetentionTime(scan);
                 Retention.Add(time);
                 Guis.Add(gui.Unit);
-
             }
 
             Fitter.Fit(Retention, Guis);

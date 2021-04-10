@@ -77,5 +77,20 @@ namespace GlycanQuant.Engine.Quant.XIC
 
             return topArea.OrderByDescending(a => a).Take(3).Sum();
         }
+
+        public double Area(SelectResult result)
+        {
+            // top 3 neighbor get top 3 peaks
+            List<IResult> top = result.Results.
+                OrderByDescending(r => r.Matches().Sum(p => p.GetIntensity())).Take(3).ToList();
+            double area = 0;
+            foreach(IResult r in top)
+            {
+                area += r.Matches().
+                    OrderByDescending(p => p.GetIntensity()).Take(3).Sum(p => p.GetIntensity());
+            }
+
+            return area;
+        }
     }
 }
