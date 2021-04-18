@@ -61,14 +61,15 @@ namespace GlycanGUIClassLibrary.Algorithm.GUISequencer
                     dp[i,j] = dp[i-1, j];   
                 }
 
-                foreach(GUI gui in guis[i-1 ])
+                foreach(GUI gui in guis[i - 1])
                 {
                     double best = 0;
                     for (int j = 0; j < gui.Unit-offset+1; j++)
                     {
                         best = Math.Max(best, dp[i - 1, j]);
                     }
-                    dp[i, gui.Unit-offset] = best + gui.Peak.GetIntensity();
+                    dp[i, gui.Unit-offset] = Math.Max(dp[i, gui.Unit - offset], 
+                        best + gui.Peak.GetIntensity());
                 }
             }
 

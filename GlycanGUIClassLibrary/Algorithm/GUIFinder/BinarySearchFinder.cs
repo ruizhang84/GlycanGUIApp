@@ -8,9 +8,11 @@ namespace GlycanGUIClassLibrary.Algorithm.GUIFinder
 {
     public class BinarySearchFinder : IGUIFinder
     {
-        public BinarySearchFinder(double ppm)
+        int maxCharge = 3;
+        public BinarySearchFinder(double ppm, int maxCharge=3)
         {
             tol = ppm;
+            this.maxCharge = maxCharge;
         }
 
         public static readonly double[] Glucose
@@ -97,7 +99,7 @@ namespace GlycanGUIClassLibrary.Algorithm.GUIFinder
                 double bestIntensity = 0;
                 IPeak bestPeak = null;
 
-                List<double> mzCandidates = Calculator.To.ComputeMZ(mass);
+                List<double> mzCandidates = Calculator.To.ComputeMZ(mass, maxCharge);
                 foreach (double mz in mzCandidates)
                 {
                     int idx = BinarySearchPoints(peaks, mz);

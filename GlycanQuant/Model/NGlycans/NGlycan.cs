@@ -9,25 +9,25 @@ namespace GlycanQuant.Model.NGlycans
 {
     public class NGlycan : IGlycan
     {
-        public const double kHexNAc = 203.0794;
-        public const double kHex = 162.0528;
-        public const double kFuc = 146.0579;
-        public const double kNeuAc = 291.0954;
-        public const double kNeuGc = 307.0903;
-
-        public const double kPermHexNAc = 245.1263;
-        public const double kPermHex = 204.0998;
-        public const double kPermFuc = 174.0892;
-        public const double kPermNeuAc = 361.1737;  //N-acetyl-neuraminic acid
-        public const double kPermNeuGc = 391.1842;  //N-glycolyl-neuraminic acid
+        public const double kCarbon = 12.0;
+        public const double kNitrogen = 14.003074;
+        public const double kOxygen = 15.99491463;
+        public const double kHydrogen = 1.007825;
+        // methyl
+        public const double kMethyl = kCarbon + kHydrogen * 3;
+        // 15 + 31
+        public const double kNonReduced = kMethyl * 2 + kOxygen;
+        // 15 + 47
+        public const double kReduced = kMethyl * 3 + kHydrogen + kOxygen;
 
         Dictionary<Monosaccharide, int> composition;
         Compound formula;
         string name = "";
         bool permethylated = true;
+        bool reduced = true;
 
         public NGlycan(bool permethylated=true, int HexNAc=2, int Hex=3, 
-            int Fuc=0, int NeuAc=0, int NeuGc = 0)
+            int Fuc=0, int NeuAc=0, int NeuGc = 0, bool reduced=true)
         {
             composition = new Dictionary<Monosaccharide, int>() 
             { 
@@ -39,6 +39,7 @@ namespace GlycanQuant.Model.NGlycans
             };
 
             this.permethylated = permethylated;
+            this.reduced = reduced;
             name = String.Join("-", composition.Select(i => i.Value));
             Dictionary<Element, int>  formulaComposition = new Dictionary<Element, int>();
 
@@ -71,6 +72,17 @@ namespace GlycanQuant.Model.NGlycans
 
         public double Mass()
         {
+            if(permethylated)
+            {
+                if (reduced)
+                {
+                    return formula.Mass + kReduced;
+                }
+                else
+                {
+                    return formula.Mass + kNonReduced;
+                }
+            }
             return formula.Mass;
         }
 

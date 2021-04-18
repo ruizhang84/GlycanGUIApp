@@ -116,57 +116,64 @@ namespace GlycanQuantConsoleApp
             return Fitter.GlucoseUnit(time);
         }
 
+        //"D:\\Data\\raw\\C18\\231_1_C18_50minWash_03012019.raw"
         static void Main(string[] args)
         {
-            Stopwatch stopWatch = new Stopwatch();
-            stopWatch.Start();
 
-            string path = @"C:\Users\iruiz\Downloads\Serum_dextrinspiked_C18_10162018_1.raw";
-            NGlycanTheoryPeaksBuilder builder = new NGlycanTheoryPeaksBuilder();
-            builder.SetBuildType(true, false, false);
-            List<IGlycanPeak> glycans = builder.Build();
+            string dir = @"D:\Data\raw\C18";
+            string[] files = Directory.GetFiles(dir);
 
-            IResultFactory factory = new NGlycanResultFactory();
-            EnvelopeProcess envelopeProcess = new EnvelopeProcess(10, ToleranceBy.PPM);
-            MonoisotopicSearcher monoisotopicSearcher = new MonoisotopicSearcher(factory);
-            IProcess spectrumProcess = new LocalNeighborPicking();
-            ISpectrumSearch spectrumSearch = new NGlycanSpectrumSearch(glycans,
-                spectrumProcess, envelopeProcess, monoisotopicSearcher);
-            ISpectrumReader spectrumReader = new ThermoRawSpectrumReader();
-            spectrumReader.Init(path);
-            ICurveFitting Fitter = new PolynomialFitting();
-
-            string outputPath = System.IO.Path.Combine(System.IO.Path.GetDirectoryName(path),
-                      System.IO.Path.GetFileNameWithoutExtension(path) + ".csv");
-
-            IResultSelect resultSelect = new ResultMaxSelect();
-            List<GUI> GuiPoints = Init(ref Fitter, spectrumReader);
-
-            for (int scan = spectrumReader.GetFirstScan(); scan <= spectrumReader.GetLastScan(); scan++)
+            foreach(string path in files)
             {
-                ISpectrum spectrum = spectrumReader.GetSpectrum(scan);
-                List<IResult> results = spectrumSearch.Search(spectrum);
-                resultSelect.Add(results);
-            }
+                Stopwatch stopWatch = new Stopwatch();
+                stopWatch.Start();
+                NGlycanTheoryPeaksBuilder builder = new NGlycanTheoryPeaksBuilder();
+                builder.SetBuildType(true, false, false);
+                List<IGlycanPeak> glycans = builder.Build();
 
-            List<string> outputString = new List<string>();
-            Dictionary<string, List<SelectResult>> resultContainer = resultSelect.Produce();
-            double areaIndex = Area(spectrumReader, GuiPoints);
+                IResultFactory factory = new NGlycanResultFactory();
+                EnvelopeProcess envelopeProcess = new EnvelopeProcess(10, ToleranceBy.PPM);
+                MonoisotopicSearcher monoisotopicSearcher = new MonoisotopicSearcher(factory);
+                IProcess spectrumProcess = new LocalNeighborPicking();
+                ISpectrumSearch spectrumSearch = new NGlycanSpectrumSearch(glycans,
+                    spectrumProcess, envelopeProcess, monoisotopicSearcher);
+                ISpectrumReader spectrumReader = new ThermoRawSpectrumReader();
+                spectrumReader.Init(path);
+                ICurveFitting Fitter = new PolynomialFitting();
 
-            foreach (string name in resultContainer.Keys)
-            {
-                List<SelectResult> selectResults = resultContainer[name];
-                foreach (SelectResult select in selectResults)
+                string outputPath = System.IO.Path.Combine(System.IO.Path.GetDirectoryName(path),
+                          System.IO.Path.GetFileNameWithoutExtension(path) + "_quant.csv");
+
+                IResultSelect resultSelect = new ResultMaxSelect();
+                List<GUI> GuiPoints = Init(ref Fitter, spectrumReader);
+
+                for (int scan = spectrumReader.GetFirstScan(); scan <= spectrumReader.GetLastScan(); scan++)
                 {
-                    IResult present = select.Present;
-                    int scan = present.GetScan();
-                    double rt = spectrumReader.GetRetentionTime(scan);
-                    double index = Math.Round(Normalize(Fitter, rt), 2);
+                    if (spectrumReader.GetMSnOrder(scan) != 1)
+                        continue;
+                    ISpectrum spectrum = spectrumReader.GetSpectrum(scan);
+                    List<IResult> results = spectrumSearch.Search(spectrum);
+                    resultSelect.Add(results);
+                }
 
-                    IXIC xicer = new TIQ3XIC(spectrumReader, 0.01, ToleranceBy.Dalton);
-                    double area = xicer.Area(select);
+                List<string> outputString = new List<string>();
+                Dictionary<string, List<SelectResult>> resultContainer = resultSelect.Produce();
+                double areaIndex = Area(spectrumReader, GuiPoints);
 
-                    List<string> output = new List<string>()
+                foreach (string name in resultContainer.Keys)
+                {
+                    List<SelectResult> selectResults = resultContainer[name];
+                    foreach (SelectResult select in selectResults)
+                    {
+                        IResult present = select.Present;
+                        int scan = present.GetScan();
+                        double rt = spectrumReader.GetRetentionTime(scan);
+                        double index = Math.Round(Normalize(Fitter, rt), 2);
+
+                        IXIC xicer = new TIQ3XIC(spectrumReader, 0.01, ToleranceBy.Dalton);
+                        double area = xicer.Area(select);
+
+                        List<string> output = new List<string>()
                             {
                                 scan.ToString(), rt.ToString(),
                                 index > 0? index.ToString():"0",
@@ -175,31 +182,34 @@ namespace GlycanQuantConsoleApp
                                 area.ToString(),
                                 areaIndex > 0? (area/areaIndex).ToString():"0"
                             };
-                    outputString.Add(string.Join(",", output));
-                }
-            }
-
-            using (FileStream ostrm = new FileStream(outputPath, FileMode.OpenOrCreate, FileAccess.Write))
-            {
-                using (StreamWriter writer = new StreamWriter(ostrm))
-                {
-
-                    writer.WriteLine("scan,time,GUI,glycan,mz,area,factor");
-                    foreach(string output in outputString)
-                    {
-                        writer.WriteLine(output);
+                        outputString.Add(string.Join(",", output));
                     }
-                    writer.Flush();
                 }
+
+                using (FileStream ostrm = new FileStream(outputPath, FileMode.OpenOrCreate, FileAccess.Write))
+                {
+                    using (StreamWriter writer = new StreamWriter(ostrm))
+                    {
+
+                        writer.WriteLine("scan,time,GUI,glycan,mz,area,factor");
+                        foreach (string output in outputString)
+                        {
+                            writer.WriteLine(output);
+                        }
+                        writer.Flush();
+                    }
+                }
+
+                stopWatch.Stop();
+                TimeSpan ts = stopWatch.Elapsed;
+
+                string elapsedTime = String.Format("{0:00}:{1:00}:{2:00}.{3:00}",
+                    ts.Hours, ts.Minutes, ts.Seconds,
+                    ts.Milliseconds / 10);
+                Console.WriteLine("RunTime " + elapsedTime);
+
             }
 
-            stopWatch.Stop();
-            TimeSpan ts = stopWatch.Elapsed;
-
-            string elapsedTime = String.Format("{0:00}:{1:00}:{2:00}.{3:00}",
-                ts.Hours, ts.Minutes, ts.Seconds,
-                ts.Milliseconds / 10);
-            Console.WriteLine("RunTime " + elapsedTime);
         }
     }
 }
