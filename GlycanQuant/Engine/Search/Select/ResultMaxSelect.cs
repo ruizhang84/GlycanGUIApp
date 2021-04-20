@@ -13,45 +13,16 @@ namespace GlycanQuant.Engine.Search.Select
         Dictionary<string, List<IResult>> resultMap 
             = new Dictionary<string, List<IResult>>();
 
-        private double tol = 0.1;
-        private ToleranceBy by = ToleranceBy.Dalton;
         private double timeTol = 3;
+        private int pricison = 2;
 
-        public ResultMaxSelect(double tol = 0.1, 
-            ToleranceBy by=ToleranceBy.Dalton, double timeTol=3)
+        public ResultMaxSelect(double timeTol=3)
         {
-            this.tol = tol;
-            this.by = by;
             this.timeTol = timeTol;
         }
-
-        public void SetTol(double tol)
-        {
-            this.tol = tol;
-        }
-        
-        public void SetToleranceBy(ToleranceBy by)
-        {
-            this.by = by;
-        }
-
         public void SetRetentionTolerance(double tol)
         {
             timeTol = tol;
-        }
-
-        bool Differ(double curr, double target)
-        {
-            if (by == ToleranceBy.PPM)
-            {
-                if (Math.Abs(curr - target) / target * 1000000.0 <= tol) return false;
-            }
-            else
-            {
-                if (Math.Abs(curr - target) <= tol) return false;
-            }
-
-            return true;
         }
 
         public void Add(List<IResult> results)
@@ -75,39 +46,41 @@ namespace GlycanQuant.Engine.Search.Select
 
             foreach (string glycanName in resultMap.Keys)
             {
-                List<IResult> result = resultMap[glycanName]
-                    .OrderBy(r => r.GetScan()).ToList();
-                List<IResult> collect = new List<IResult>();
-                filtered[glycanName] = new List<SelectResult>();
+                Dictionary<double, List<IResult>> resultGroup =
+                    resultMap[glycanName].GroupBy(r => Math.Round(r.GetMZ(), pricison))
+                    .ToDictionary(g => g.Key, g => g.OrderBy(r => r.GetScan()).ToList());
 
-                foreach (IResult r in result)
+                foreach(double mz in resultGroup.Keys)
                 {
-                    int scan = r.GetScan();
-                    if (collect.Count == 0)
+                    List<IResult> collect = new List<IResult>();
+                    filtered[glycanName] = new List<SelectResult>();
+
+                    foreach (IResult r in resultGroup[mz])
                     {
-                        collect.Add(r);
-                    }
-                    else
-                    {
-                        // check scan continue, check mz same
-                        double mz = r.GetMZ();
-                        double retention = r.GetRetention();
-                        if (collect.Last().GetRetention() + timeTol < retention ||
-                            Differ(collect.Last().GetMZ(), mz))
+                        int scan = r.GetScan();
+                        if (collect.Count == 0)
                         {
-                            IResult present = Select(collect);
-                            filtered[glycanName].Add(new SelectResult(present, collect));
-                            collect = new List<IResult>();
+                            collect.Add(r);
                         }
-
-                        collect.Add(r);
+                        else
+                        {
+                            // check scan continue, check mz same
+                            double retention = r.GetRetention();
+                            if (collect.Last().GetRetention() + timeTol < retention)
+                            {
+                                IResult present = Select(collect);
+                                filtered[glycanName].Add(new SelectResult(present, collect));
+                                collect = new List<IResult>();
+                            }
+                            collect.Add(r);
+                        }
                     }
-                }
 
-                if (collect.Count > 0)
-                {
-                    IResult present = Select(collect);
-                    filtered[glycanName].Add(new SelectResult(present, collect));
+                    if (collect.Count > 0)
+                    {
+                        IResult present = Select(collect);
+                        filtered[glycanName].Add(new SelectResult(present, collect));
+                    }
                 }
             }
 

@@ -11,15 +11,12 @@ namespace GlycanQuant.Spectrum.Process.PeakPicking
     {
         protected double precision = 0.1;
 
-        public ISpectrum Process(ISpectrum spectrum)
+        protected virtual List<IPeak> InsertPeaks(ISpectrum spectrum)
         {
-            if (spectrum.GetPeaks().Count == 0)
-                return spectrum;
-            // insert pseudo peaks for large gap
             List<IPeak> peaks = new List<IPeak>();
             double mz = spectrum.GetPeaks().First().GetMZ();
             peaks.Add(new GeneralPeak(mz - precision, 0));
-            foreach(IPeak peak in spectrum.GetPeaks())
+            foreach (IPeak peak in spectrum.GetPeaks())
             {
                 if (peak.GetMZ() - mz > precision)
                 {
@@ -30,7 +27,15 @@ namespace GlycanQuant.Spectrum.Process.PeakPicking
                 mz = peak.GetMZ();
             }
             peaks.Add(new GeneralPeak(mz + precision, 0));
+            return peaks;
+        }
 
+        public ISpectrum Process(ISpectrum spectrum)
+        {
+            if (spectrum.GetPeaks().Count == 0)
+                return spectrum;
+            // insert pseudo peaks for large gap
+            List<IPeak> peaks = InsertPeaks(spectrum);
             List<IPeak> processedPeaks = new List<IPeak>();
            
             int index = 1;

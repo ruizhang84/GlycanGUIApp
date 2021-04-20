@@ -145,7 +145,7 @@ namespace GlycanQuantConsoleApp
                 string outputPath = System.IO.Path.Combine(System.IO.Path.GetDirectoryName(path),
                           System.IO.Path.GetFileNameWithoutExtension(path) + "_quant.csv");
 
-                IResultSelect resultSelect = new ResultMaxSelect(0.5,ToleranceBy.Dalton, 3);
+                IResultSelect resultSelect = new ResultMaxSelect(3);
                 List<GUI> GuiPoints = Init(ref Fitter, spectrumReader);
 
                 for (int scan = spectrumReader.GetFirstScan(); scan <= spectrumReader.GetLastScan(); scan++)
