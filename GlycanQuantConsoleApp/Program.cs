@@ -110,7 +110,6 @@ namespace GlycanQuantConsoleApp
 
             return GuiPoints;
         }
-
         static double Normalize(ICurveFitting Fitter,  double time)
         {
             return Fitter.GlucoseUnit(time);
@@ -139,12 +138,14 @@ namespace GlycanQuantConsoleApp
                     spectrumProcess, envelopeProcess, monoisotopicSearcher);
                 ISpectrumReader spectrumReader = new ThermoRawSpectrumReader();
                 spectrumReader.Init(path);
+
+
                 ICurveFitting Fitter = new PolynomialFitting();
 
                 string outputPath = System.IO.Path.Combine(System.IO.Path.GetDirectoryName(path),
                           System.IO.Path.GetFileNameWithoutExtension(path) + "_quant.csv");
 
-                IResultSelect resultSelect = new ResultMaxSelect();
+                IResultSelect resultSelect = new ResultMaxSelect(0.5,ToleranceBy.Dalton, 3);
                 List<GUI> GuiPoints = Init(ref Fitter, spectrumReader);
 
                 for (int scan = spectrumReader.GetFirstScan(); scan <= spectrumReader.GetLastScan(); scan++)
@@ -167,10 +168,10 @@ namespace GlycanQuantConsoleApp
                     {
                         IResult present = select.Present;
                         int scan = present.GetScan();
-                        double rt = spectrumReader.GetRetentionTime(scan);
+                        double rt = present.GetRetention();
                         double index = Math.Round(Normalize(Fitter, rt), 2);
 
-                        IXIC xicer = new TIQ3XIC(spectrumReader, 0.01, ToleranceBy.Dalton);
+                        IXIC xicer = new TIQ3XIC(spectrumReader);
                         double area = xicer.Area(select);
 
                         List<string> output = new List<string>()
@@ -190,8 +191,8 @@ namespace GlycanQuantConsoleApp
                 {
                     using (StreamWriter writer = new StreamWriter(ostrm))
                     {
-
                         writer.WriteLine("scan,time,GUI,glycan,mz,area,factor");
+                        //writer.WriteLine("scan,time,glycan,mz,area");
                         foreach (string output in outputString)
                         {
                             writer.WriteLine(output);

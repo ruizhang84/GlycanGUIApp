@@ -18,6 +18,8 @@ namespace GlycanQuant.Engine.Search
         void SetGlycan(IGlycanPeak glycan);
         int GetScan();
         void SetScan(int scan);
+        double GetRetention();
+        void SetRetention(double retention);
         double GetMZ();
         void SetMZ(double mz);
         int GetCharge();

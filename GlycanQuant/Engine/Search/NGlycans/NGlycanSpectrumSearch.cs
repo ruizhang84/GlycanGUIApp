@@ -65,6 +65,7 @@ namespace GlycanQuant.Engine.Search.NGlycans
                             bestScore = score;
                             result = temp;
                             result.SetMZ(mz);
+                            result.SetRetention(spectrum.GetRetention());
                             result.SetCharge(charge);
                             result.SetScan(spectrum.GetScanNum());
                         }

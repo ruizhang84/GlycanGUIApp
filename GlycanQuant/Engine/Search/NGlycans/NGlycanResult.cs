@@ -16,6 +16,7 @@ namespace GlycanQuant.Engine.Search.NGlycans
         double score;
         List<IPeak> peaks;
         int scan = 0;
+        double time = 0;
         double mz = 0;
         int charge = 0;
 
@@ -34,6 +35,11 @@ namespace GlycanQuant.Engine.Search.NGlycans
         public double GetMZ()
         {
             return mz;
+        }
+
+        public double GetRetention()
+        {
+            return time;
         }
 
         public int GetScan()
@@ -74,6 +80,11 @@ namespace GlycanQuant.Engine.Search.NGlycans
         public void SetMZ(double mz)
         {
             this.mz = mz;
+        }
+
+        public void SetRetention(double retention)
+        {
+            time = retention;
         }
 
         public void SetScan(int scan)

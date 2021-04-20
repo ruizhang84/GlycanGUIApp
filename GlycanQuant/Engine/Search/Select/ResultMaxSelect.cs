@@ -10,12 +10,20 @@ namespace GlycanQuant.Engine.Search.Select
 {
     public class ResultMaxSelect : IResultSelect
     {
-        List<int> scanList = new List<int>();
         Dictionary<string, List<IResult>> resultMap 
             = new Dictionary<string, List<IResult>>();
 
         private double tol = 0.1;
         private ToleranceBy by = ToleranceBy.Dalton;
+        private double timeTol = 3;
+
+        public ResultMaxSelect(double tol = 0.1, 
+            ToleranceBy by=ToleranceBy.Dalton, double timeTol=3)
+        {
+            this.tol = tol;
+            this.by = by;
+            this.timeTol = timeTol;
+        }
 
         public void SetTol(double tol)
         {
@@ -25,6 +33,11 @@ namespace GlycanQuant.Engine.Search.Select
         public void SetToleranceBy(ToleranceBy by)
         {
             this.by = by;
+        }
+
+        public void SetRetentionTolerance(double tol)
+        {
+            timeTol = tol;
         }
 
         bool Differ(double curr, double target)
@@ -52,11 +65,6 @@ namespace GlycanQuant.Engine.Search.Select
                 }
                 resultMap[name].Add(r);
             }
-            if (results.Count > 0)
-            {
-                int scan = results.First().GetScan();
-                scanList.Add(scan);
-            }
         }
 
 
@@ -64,11 +72,9 @@ namespace GlycanQuant.Engine.Search.Select
         {
             Dictionary<string, List<SelectResult>> filtered 
                 = new Dictionary<string, List<SelectResult>>();
-            scanList.Sort();
 
             foreach (string glycanName in resultMap.Keys)
             {
-                int index = 0;
                 List<IResult> result = resultMap[glycanName]
                     .OrderBy(r => r.GetScan()).ToList();
                 List<IResult> collect = new List<IResult>();
@@ -85,8 +91,8 @@ namespace GlycanQuant.Engine.Search.Select
                     {
                         // check scan continue, check mz same
                         double mz = r.GetMZ();
-                        if (index == scanList.Count -1 || 
-                            scanList[index + 1] != scan || 
+                        double retention = r.GetRetention();
+                        if (collect.Last().GetRetention() + timeTol < retention ||
                             Differ(collect.Last().GetMZ(), mz))
                         {
                             IResult present = Select(collect);
@@ -95,13 +101,6 @@ namespace GlycanQuant.Engine.Search.Select
                         }
 
                         collect.Add(r);
-
-                    }
-
-                    while (index < scanList.Count &&
-                        scanList[index] < scan)
-                    {
-                        index++;
                     }
                 }
 

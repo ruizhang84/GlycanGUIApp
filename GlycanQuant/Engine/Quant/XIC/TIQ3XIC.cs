@@ -15,7 +15,8 @@ namespace GlycanQuant.Engine.Quant.XIC
         double tol;
         ToleranceBy by;
 
-        public TIQ3XIC(ISpectrumReader spectrumReader, double tol, ToleranceBy by)
+        public TIQ3XIC(ISpectrumReader spectrumReader, 
+            double tol=0.1, ToleranceBy by=ToleranceBy.Dalton)
         {
             this.spectrumReader = spectrumReader;
             this.tol = tol;
