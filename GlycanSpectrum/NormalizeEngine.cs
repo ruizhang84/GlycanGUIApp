@@ -1,7 +1,7 @@
-﻿using GlycanGUIClassLibrary.Algorithm;
-using GlycanGUIClassLibrary.Algorithm.CurveFitting;
-using GlycanGUIClassLibrary.Algorithm.GUIFinder;
-using GlycanGUIClassLibrary.Algorithm.GUISequencer;
+﻿using GlycanGUI.Algorithm;
+using GlycanGUI.Algorithm.CurveFitting;
+using GlycanGUI.Algorithm.GUIFinder;
+using GlycanGUI.Algorithm.GUISequencer;
 using GlycanQuant.Engine.Quant;
 using GlycanQuant.Spectrum.Process;
 using GlycanQuant.Spectrum.Process.PeakPicking;
@@ -13,7 +13,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace GlycanQuantApp
+namespace GlycanSpectrum
 {
     public class NormalizerEngine
     {

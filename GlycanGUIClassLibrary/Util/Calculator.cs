@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace GlycanGUIClassLibrary.Util
+namespace GlycanGUI.Util
 {
     public class Calculator
     {

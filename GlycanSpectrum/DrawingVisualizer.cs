@@ -14,7 +14,7 @@ using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
 
 
-namespace GlycanQuantApp
+namespace GlycanSpectrum
 {
     public class DrawingVisualizer
     {

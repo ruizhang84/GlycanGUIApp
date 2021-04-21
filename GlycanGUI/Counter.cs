@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace GlycanQuantApp
+namespace GlycoGUIApp
 {
     public class ProgressingEventArgs : EventArgs
     {

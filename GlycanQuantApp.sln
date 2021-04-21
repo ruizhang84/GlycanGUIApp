@@ -3,17 +3,21 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 16
 VisualStudioVersion = 16.0.31025.194
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GlycanQuantApp", "GlycanQuantApp\GlycanQuantApp.csproj", "{2E25ADB7-7773-4E2D-B046-FAE91310E3D0}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GlycanSpectrum", "GlycanSpectrum\GlycanSpectrum.csproj", "{2E25ADB7-7773-4E2D-B046-FAE91310E3D0}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SpectrumDataClassLibrary", "SpectrumDataClassLibrary\SpectrumDataClassLibrary.csproj", "{CD74CB1F-2D46-4FDE-8979-E46772AF6CCB}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "UnitTestProject", "UnitTestProject\UnitTestProject.csproj", "{4225141C-7F59-46AD-BB65-E3F343DFEBA1}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GlycanQuant", "GlycanQuant\GlycanQuant.csproj", "{B221444C-20D9-40B5-98B7-4745AC354979}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GlycanQuantClassLibrary", "GlycanQuantClassLibrary\GlycanQuantClassLibrary.csproj", "{B221444C-20D9-40B5-98B7-4745AC354979}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GlycanGUIClassLibrary", "GlycanGUIClassLibrary\GlycanGUIClassLibrary.csproj", "{C5902A7F-9C14-44F8-9AB7-E938C501DBEE}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GlycanQuantConsoleApp", "GlycanQuantConsoleApp\GlycanQuantConsoleApp.csproj", "{1DEE97EF-7E90-4D53-B35A-2692DD2AAADC}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GlycanGUI", "GlycanGUI\GlycanGUI.csproj", "{4B70C358-5859-4870-AC27-B96972665409}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GlycanQuant", "GlycanQuant\GlycanQuant.csproj", "{2196839F-1175-45A0-8FE3-7F799E7A0D7C}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -71,6 +75,22 @@ Global
 		{1DEE97EF-7E90-4D53-B35A-2692DD2AAADC}.Release|Any CPU.Build.0 = Release|Any CPU
 		{1DEE97EF-7E90-4D53-B35A-2692DD2AAADC}.Release|x64.ActiveCfg = Release|x64
 		{1DEE97EF-7E90-4D53-B35A-2692DD2AAADC}.Release|x64.Build.0 = Release|x64
+		{4B70C358-5859-4870-AC27-B96972665409}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4B70C358-5859-4870-AC27-B96972665409}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4B70C358-5859-4870-AC27-B96972665409}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{4B70C358-5859-4870-AC27-B96972665409}.Debug|x64.Build.0 = Debug|Any CPU
+		{4B70C358-5859-4870-AC27-B96972665409}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4B70C358-5859-4870-AC27-B96972665409}.Release|Any CPU.Build.0 = Release|Any CPU
+		{4B70C358-5859-4870-AC27-B96972665409}.Release|x64.ActiveCfg = Release|Any CPU
+		{4B70C358-5859-4870-AC27-B96972665409}.Release|x64.Build.0 = Release|Any CPU
+		{2196839F-1175-45A0-8FE3-7F799E7A0D7C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2196839F-1175-45A0-8FE3-7F799E7A0D7C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2196839F-1175-45A0-8FE3-7F799E7A0D7C}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{2196839F-1175-45A0-8FE3-7F799E7A0D7C}.Debug|x64.Build.0 = Debug|Any CPU
+		{2196839F-1175-45A0-8FE3-7F799E7A0D7C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2196839F-1175-45A0-8FE3-7F799E7A0D7C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{2196839F-1175-45A0-8FE3-7F799E7A0D7C}.Release|x64.ActiveCfg = Release|Any CPU
+		{2196839F-1175-45A0-8FE3-7F799E7A0D7C}.Release|x64.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

@@ -1,0 +1,30 @@
+﻿<Window x:Class="GlycanQuantApp.ConfigureWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:GlycanQuant"
+        mc:Ignorable="d"
+        Title="ConfigureWindow" Height="140" Width="400">
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition />
+        </Grid.RowDefinitions>
+        <StackPanel Orientation="Horizontal"  Grid.Row="0">
+            <Label Content="MS1 Tolerance"/>
+            <TextBox Name="MS1Tol" Text="10" VerticalAlignment="Center" FontSize="12" Width="76"/>
+            <RadioButton Name="MS1TolByPPM" Content="ppm" VerticalAlignment="Center"  IsChecked="True" Margin="5" Checked="MS1TolByPPM_Checked"/>
+            <RadioButton Name="MS1TolByDalton" Content="Dalton" VerticalAlignment="Center" Margin="5" Checked="MS1TolByDalton_Checked"/>
+        </StackPanel>
+        <StackPanel Orientation="Horizontal"  Grid.Row="1">
+            <Label Content="Retention Range (min)"/>
+            <TextBox Name="RetentionTol" Text="3" VerticalAlignment="Center" FontSize="12" Width="76"/>
+        </StackPanel>
+        <Grid  HorizontalAlignment="Right" VerticalAlignment="Center" Grid.Row="2">
+            <Button x:Name="Save"  Content="Save" HorizontalAlignment="Right" VerticalAlignment="Top" Width="75" Margin="0,0,100,0" Click="Save_Click" />
+            <Button x:Name="Cancel"  Content="Cancel" HorizontalAlignment="Right" VerticalAlignment="Top" Width="75" Margin="0,0,20,0" Click="Cancel_Click" />
+        </Grid>
+    </Grid>
+</Window>

@@ -30,7 +30,7 @@ using System.Windows.Navigation;
 using System.Windows.Shapes;
 using System.Windows.Threading;
 
-namespace GlycanQuantApp
+namespace GlycanSpectrum
 {
     /// <summary>
     /// Interaction logic for MainWindow.xaml

@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace GlycanGUIClassLibrary.Algorithm
+namespace GlycanGUI.Algorithm
 {
     public interface IGUISequencer
     {

@@ -3,8 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using GlycanGUIClassLibrary.Algorithm;
-using GlycanGUIClassLibrary.Algorithm.GUISequencer;
+using GlycanGUI.Algorithm;
+using GlycanGUI.Algorithm.GUISequencer;
 using NUnit.Framework;
 using SpectrumData.Spectrum;
 

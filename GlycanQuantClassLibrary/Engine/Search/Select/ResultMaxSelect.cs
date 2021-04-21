@@ -1,6 +1,7 @@
 ﻿using GlycanQuant.Engine.Algorithm;
 using GlycanQuant.Engine.Builder;
 using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -10,8 +11,8 @@ namespace GlycanQuant.Engine.Search.Select
 {
     public class ResultMaxSelect : IResultSelect
     {
-        Dictionary<string, List<IResult>> resultMap 
-            = new Dictionary<string, List<IResult>>();
+        ConcurrentDictionary<string, List<IResult>> resultMap 
+            = new ConcurrentDictionary<string, List<IResult>>();
 
         private double timeTol = 3;
         private int pricison = 2;

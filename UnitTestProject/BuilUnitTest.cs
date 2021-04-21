@@ -4,7 +4,7 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using GlycanGUIClassLibrary.Util;
+using GlycanGUI.Util;
 using GlycanQuant.Engine.Builder;
 using GlycanQuant.Engine.Builder.NGlycans;
 using NUnit.Framework;

@@ -1,0 +1,22 @@
+﻿<Window x:Class="GlycoGUIApp.CurveWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:GlycoGUIApp"
+        mc:Ignorable="d"
+        Title="CurveWindow" Height="450" Width="800">
+    <Grid>
+        <Canvas Name="canvas"/>
+        <StackPanel Orientation="Vertical" VerticalAlignment="Top"
+                     HorizontalAlignment="Center">
+            <StackPanel Orientation="Horizontal">
+                <TextBlock Name="title" FontFamily="Times New Roman">
+                <Run Text="Curve Fitting R&#x00B2;="/>
+                </TextBlock>
+                <TextBlock Name="coefficient" FontFamily="Times New Roman"/>
+            </StackPanel>
+            <TextBlock Name="equation" FontFamily="Times New Roman"/>
+        </StackPanel>
+    </Grid>
+</Window>

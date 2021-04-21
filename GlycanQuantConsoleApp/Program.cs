@@ -1,7 +1,7 @@
-﻿using GlycanGUIClassLibrary.Algorithm;
-using GlycanGUIClassLibrary.Algorithm.CurveFitting;
-using GlycanGUIClassLibrary.Algorithm.GUIFinder;
-using GlycanGUIClassLibrary.Algorithm.GUISequencer;
+﻿using GlycanGUI.Algorithm;
+using GlycanGUI.Algorithm.CurveFitting;
+using GlycanGUI.Algorithm.GUIFinder;
+using GlycanGUI.Algorithm.GUISequencer;
 using GlycanQuant.Engine.Algorithm;
 using GlycanQuant.Engine.Builder;
 using GlycanQuant.Engine.Builder.NGlycans;

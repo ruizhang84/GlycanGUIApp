@@ -1,10 +1,10 @@
-﻿using GlycanGUIClassLibrary.Util;
+﻿using GlycanGUI.Util;
 using SpectrumData;
 using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace GlycanGUIClassLibrary.Algorithm.GUIFinder
+namespace GlycanGUI.Algorithm.GUIFinder
 {
     public class BinarySearchFinder : IGUIFinder
     {

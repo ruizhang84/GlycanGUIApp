@@ -1,12 +1,14 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>net5.0</TargetFramework>
-    <AssemblyName>GlycanQuant</AssemblyName>
-    <Platforms>AnyCPU;x64</Platforms>
+    <OutputType>WinExe</OutputType>
+    <TargetFramework>net5.0-windows</TargetFramework>
+    <UseWPF>true</UseWPF>
   </PropertyGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\GlycanGUIClassLibrary\GlycanGUIClassLibrary.csproj" />
+    <ProjectReference Include="..\GlycanQuantClassLibrary\GlycanQuantClassLibrary.csproj" />
     <ProjectReference Include="..\SpectrumDataClassLibrary\SpectrumDataClassLibrary.csproj" />
   </ItemGroup>
 
