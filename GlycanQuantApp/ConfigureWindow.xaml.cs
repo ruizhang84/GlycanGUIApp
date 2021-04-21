@@ -24,7 +24,7 @@ namespace GlycanQuantApp
         {
             InitializeComponent();
             MS1Tol.Text = SearchingParameters.Access.Tolerance.ToString();
-            RetentionTol.Text = SearchingParameters.Access.retentionToleraence.ToString();
+            RetentionTol.Text = SearchingParameters.Access.retentionRange.ToString();
             if (SearchingParameters.Access.ToleranceBy
                 == ToleranceBy.Dalton)
             {

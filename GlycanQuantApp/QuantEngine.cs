@@ -1,7 +1,5 @@
 ﻿using GlycanGUI.Algorithm;
 using GlycanGUI.Algorithm.CurveFitting;
-using GlycanGUI.Algorithm.GUIFinder;
-using GlycanGUI.Algorithm.GUISequencer;
 using GlycanQuant.Engine.Builder;
 using GlycanQuant.Engine.Builder.NGlycans;
 using GlycanQuant.Engine.Quant;
@@ -27,37 +25,33 @@ namespace GlycanQuantApp
     {
         private readonly object resultLock = new object();
 
-        public void Run(string path, Counter counter, NormalizerEngine normalizer)
+        public void Run(string path, Counter counter, ISpectrumReader spectrumReader, NormalizerEngine normalizer)
         {
             NGlycanTheoryPeaksBuilder builder = new NGlycanTheoryPeaksBuilder();
             builder.SetBuildType(true, false, false);
             List<IGlycanPeak> glycans = builder.Build();
 
-            IResultFactory factory = new NGlycanResultFactory();
-            EnvelopeProcess envelopeProcess = new EnvelopeProcess(
-                SearchingParameters.Access.Tolerance,
-                SearchingParameters.Access.ToleranceBy);
-            MonoisotopicSearcher monoisotopicSearcher = new MonoisotopicSearcher(factory);
-            IProcess spectrumProcess = new LocalNeighborPicking();
-            ISpectrumSearch spectrumSearch = new NGlycanSpectrumSearch(glycans,
-                spectrumProcess, envelopeProcess, monoisotopicSearcher);
-            ISpectrumReader spectrumReader = new ThermoRawSpectrumReader();
             spectrumReader.Init(path);
-
-
-            ICurveFitting Fitter = new PolynomialFitting();
-
             string outputPath = Path.Combine(Path.GetDirectoryName(path),
                         Path.GetFileNameWithoutExtension(path) + "_quant.csv");
 
             IResultSelect resultSelect = new ResultMaxSelect(SearchingParameters.Access.retentionRange);
            
             int start = spectrumReader.GetFirstScan();
-            int end = spectrumReader.GetFirstScan();
+            int end = spectrumReader.GetLastScan();
             Parallel.For(start, end, (i) =>
             {
                 if (spectrumReader.GetMSnOrder(i) < 2)
                 {
+                    IResultFactory factory = new NGlycanResultFactory();
+                    EnvelopeProcess envelopeProcess = new EnvelopeProcess(
+                        SearchingParameters.Access.Tolerance,
+                        SearchingParameters.Access.ToleranceBy);
+                    MonoisotopicSearcher monoisotopicSearcher = new MonoisotopicSearcher(factory);
+                    IProcess spectrumProcess = new LocalNeighborPicking();
+                    ISpectrumSearch spectrumSearch = new NGlycanSpectrumSearch(glycans,
+                        spectrumProcess, envelopeProcess, monoisotopicSearcher);
+
                     ISpectrum spectrum = spectrumReader.GetSpectrum(i);
                     List<IResult> results = spectrumSearch.Search(spectrum);
                     lock (resultLock)
@@ -84,14 +78,28 @@ namespace GlycanQuantApp
                     IXIC xicer = new TIQ3XIC(spectrumReader);
                     double area = xicer.Area(select);
 
-                    List<string> output = new List<string>()
+                    List<string> output;
+                    if (normalizer.Initialized())
+                    {
+                        output = new List<string>()
                         {
                             scan.ToString(), rt.ToString(),
-                            index > 0? index.ToString():"0",
                             name,
                             present.GetMZ().ToString(),
                             area.ToString(),
                         };
+                    }
+                    else
+                    {
+                        output = new List<string>()
+                        {
+                            scan.ToString(), rt.ToString(),
+                            index.ToString(),
+                            name,
+                            present.GetMZ().ToString(),
+                            area.ToString(),
+                        };
+                    }
                     outputString.Add(string.Join(",", output));
                 }
             }
@@ -100,8 +108,10 @@ namespace GlycanQuantApp
             {
                 using (StreamWriter writer = new StreamWriter(ostrm))
                 {
-                    writer.WriteLine("scan,time,GUI,glycan,mz,area,factor");
-                    //writer.WriteLine("scan,time,glycan,mz,area");
+                    if (normalizer.Initialized())
+                        writer.WriteLine("scan,time,glycan,mz,area");
+                    else
+                        writer.WriteLine("scan,time,GUI,glycan,mz,area");
                     foreach (string output in outputString)
                     {
                         writer.WriteLine(output);

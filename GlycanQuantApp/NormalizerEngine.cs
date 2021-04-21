@@ -1,4 +1,5 @@
-﻿using GlycanGUI.Algorithm;
+﻿
+using GlycanGUI.Algorithm;
 using GlycanGUI.Algorithm.CurveFitting;
 using GlycanGUI.Algorithm.GUIFinder;
 using GlycanGUI.Algorithm.GUISequencer;
@@ -26,15 +27,15 @@ namespace GlycanQuantApp
 
         private bool initialized = false;
 
+        public bool Initialized() {  return initialized;  }
         public double Normalize(double time)
         {
             if (!initialized) return -1;
             return Fitter.GlucoseUnit(time);
         }
 
-        public void Run(string path, Counter counter)
+        public void Run(string path, Counter counter, ISpectrumReader reader)
         {
-            ISpectrumReader reader = new ThermoRawSpectrumReader();
             reader.Init(path);
 
             IGUIFinder finder = new BinarySearchFinder(PPM);

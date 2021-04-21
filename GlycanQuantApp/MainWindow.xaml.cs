@@ -15,6 +15,9 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 using System.Windows.Threading;
+using GlycanQuant.Engine.Algorithm;
+using SpectrumData;
+using SpectrumData.Reader;
 
 namespace GlycanQuantApp
 {
@@ -25,11 +28,20 @@ namespace GlycanQuantApp
     {
         private string path = "";
         private NormalizerEngine engine = new NormalizerEngine();
+        private QuantEngine quanter = new QuantEngine();
         private int readingCounter;
+        Counter counter = new Counter();
+        ISpectrumReader spectrumReader = new ThermoRawSpectrumReader();
 
         public MainWindow()
         {
             InitializeComponent();
+            InitCounter();
+        }
+
+        public void InitCounter()
+        {
+            counter.progressChange += ReadProgressChanged;
         }
 
         private void Configure_Click(object sender, RoutedEventArgs e)
@@ -71,15 +83,21 @@ namespace GlycanQuantApp
             }
         }
 
-        private void PeakArea_Click(object sender, RoutedEventArgs e)
+        private async void PeakArea_Click(object sender, RoutedEventArgs e)
         {
             if (SearchingParameters.Access.MSMSFiles.Count == 0)
             {
                 MessageBox.Show("Please choose MS/MS files");
+                return;
             }
-            else
+            await Task.Run(() =>
             {
-            }
+                foreach(string path in SearchingParameters.Access.MSMSFiles)
+                {
+                    readingCounter = 0;
+                    quanter.Run(path, counter, spectrumReader, engine);
+                }
+            });
         }
 
         private void GUI_Click(object sender, RoutedEventArgs e)
@@ -108,12 +126,9 @@ namespace GlycanQuantApp
             }
             normalize.IsEnabled = false;
             readingCounter = 0;
-            Counter counter = new Counter();
-            counter.progressChange += ReadProgressChanged;
-
             await Task.Run(() =>
             {
-                engine.Run(path, counter);
+                engine.Run(path, counter, spectrumReader);
             });
 
         }
