@@ -14,7 +14,9 @@ namespace GlycanQuantApp
         public ToleranceBy ToleranceBy { get; set; } = ToleranceBy.PPM;
         // retention
         public double retentionRange { get; set; } = 3;
-
+        // parameter
+        public int MaxCharage { get; set; } = 3;
+        public double Cutoff { get; set; } = 0.9;
 
         //file
         public List<string> MSMSFiles { get; set; } = new List<string>();
@@ -28,6 +30,8 @@ namespace GlycanQuantApp
             Tolerance = ConfigureParameters.Access.Tolerance;
             ToleranceBy = ConfigureParameters.Access.ToleranceBy;
             retentionRange = ConfigureParameters.Access.retentionRange;
+            MaxCharage = ConfigureParameters.Access.MaxCharage;
+            Cutoff = ConfigureParameters.Access.Cutoff;
         }
 
         protected static readonly Lazy<SearchingParameters>
@@ -45,6 +49,9 @@ namespace GlycanQuantApp
 
         // retention
         public double retentionRange { get; set; } = 3;
+        // parameter
+        public int MaxCharage { get; set; } = 3;
+        public double Cutoff { get; set; } = 0.9;
 
         protected static readonly Lazy<ConfigureParameters>
             lazy = new Lazy<ConfigureParameters>(() => new ConfigureParameters());

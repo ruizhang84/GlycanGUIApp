@@ -15,7 +15,11 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GlycanGUIClassLibrary", "Gl
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GlycanGUI", "GlycanGUI\GlycanGUI.csproj", "{4B70C358-5859-4870-AC27-B96972665409}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GlycanQuantApp", "GlycanQuantApp\GlycanQuantApp.csproj", "{CB97496C-3E47-42DD-9697-527330C200AC}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GlycanQuantApp", "GlycanQuantApp\GlycanQuantApp.csproj", "{CB97496C-3E47-42DD-9697-527330C200AC}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GlycanQuantConsoleApp", "GlycanQuantConsoleApp\GlycanQuantConsoleApp.csproj", "{FD5D8A08-1BFF-42B7-BFFF-8EBF83989993}"
+EndProject
+Project("{54435603-DBB4-11D2-8724-00A0C9A8B90C}") = "GycanGUISetup", "GycanGUISetup\GycanGUISetup.vdproj", "{0BF8802C-7AF3-4DA0-92EF-AE5C1B9DF5ED}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -71,16 +75,28 @@ Global
 		{4B70C358-5859-4870-AC27-B96972665409}.Debug|x64.Build.0 = Debug|Any CPU
 		{4B70C358-5859-4870-AC27-B96972665409}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{4B70C358-5859-4870-AC27-B96972665409}.Release|Any CPU.Build.0 = Release|Any CPU
-		{4B70C358-5859-4870-AC27-B96972665409}.Release|x64.ActiveCfg = Release|Any CPU
-		{4B70C358-5859-4870-AC27-B96972665409}.Release|x64.Build.0 = Release|Any CPU
+		{4B70C358-5859-4870-AC27-B96972665409}.Release|x64.ActiveCfg = Release|x64
+		{4B70C358-5859-4870-AC27-B96972665409}.Release|x64.Build.0 = Release|x64
 		{CB97496C-3E47-42DD-9697-527330C200AC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{CB97496C-3E47-42DD-9697-527330C200AC}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{CB97496C-3E47-42DD-9697-527330C200AC}.Debug|x64.ActiveCfg = Debug|Any CPU
 		{CB97496C-3E47-42DD-9697-527330C200AC}.Debug|x64.Build.0 = Debug|Any CPU
 		{CB97496C-3E47-42DD-9697-527330C200AC}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{CB97496C-3E47-42DD-9697-527330C200AC}.Release|Any CPU.Build.0 = Release|Any CPU
-		{CB97496C-3E47-42DD-9697-527330C200AC}.Release|x64.ActiveCfg = Release|Any CPU
-		{CB97496C-3E47-42DD-9697-527330C200AC}.Release|x64.Build.0 = Release|Any CPU
+		{CB97496C-3E47-42DD-9697-527330C200AC}.Release|x64.ActiveCfg = Release|x64
+		{CB97496C-3E47-42DD-9697-527330C200AC}.Release|x64.Build.0 = Release|x64
+		{FD5D8A08-1BFF-42B7-BFFF-8EBF83989993}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{FD5D8A08-1BFF-42B7-BFFF-8EBF83989993}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{FD5D8A08-1BFF-42B7-BFFF-8EBF83989993}.Debug|x64.ActiveCfg = Debug|x64
+		{FD5D8A08-1BFF-42B7-BFFF-8EBF83989993}.Debug|x64.Build.0 = Debug|x64
+		{FD5D8A08-1BFF-42B7-BFFF-8EBF83989993}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{FD5D8A08-1BFF-42B7-BFFF-8EBF83989993}.Release|Any CPU.Build.0 = Release|Any CPU
+		{FD5D8A08-1BFF-42B7-BFFF-8EBF83989993}.Release|x64.ActiveCfg = Release|x64
+		{FD5D8A08-1BFF-42B7-BFFF-8EBF83989993}.Release|x64.Build.0 = Release|x64
+		{0BF8802C-7AF3-4DA0-92EF-AE5C1B9DF5ED}.Debug|Any CPU.ActiveCfg = Debug
+		{0BF8802C-7AF3-4DA0-92EF-AE5C1B9DF5ED}.Debug|x64.ActiveCfg = Debug
+		{0BF8802C-7AF3-4DA0-92EF-AE5C1B9DF5ED}.Release|Any CPU.ActiveCfg = Release
+		{0BF8802C-7AF3-4DA0-92EF-AE5C1B9DF5ED}.Release|x64.ActiveCfg = Release
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

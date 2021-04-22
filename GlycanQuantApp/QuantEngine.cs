@@ -50,7 +50,8 @@ namespace GlycanQuantApp
                     MonoisotopicSearcher monoisotopicSearcher = new MonoisotopicSearcher(factory);
                     IProcess spectrumProcess = new LocalNeighborPicking();
                     ISpectrumSearch spectrumSearch = new NGlycanSpectrumSearch(glycans,
-                        spectrumProcess, envelopeProcess, monoisotopicSearcher);
+                        spectrumProcess, envelopeProcess, monoisotopicSearcher,
+                        SearchingParameters.Access.MaxCharage, SearchingParameters.Access.Cutoff);
 
                     ISpectrum spectrum = spectrumReader.GetSpectrum(i);
                     List<IResult> results = spectrumSearch.Search(spectrum);

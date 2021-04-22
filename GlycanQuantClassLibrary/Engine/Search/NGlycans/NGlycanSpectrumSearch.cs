@@ -25,7 +25,7 @@ namespace GlycanQuant.Engine.Search.NGlycans
         public NGlycanSpectrumSearch(List<IGlycanPeak> glycans,
             IProcess spectrumProcessor, EnvelopeProcess envelopeProcessor, 
             MonoisotopicSearcher monoisotopicSearcher,
-            int maxCharge = 4, double cutoff = 0.9)
+            int maxCharge = 3, double cutoff = 0.9)
         {
             this.glycans = glycans;
             this.spectrumProcessor = spectrumProcessor;

@@ -10,6 +10,7 @@
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
             <RowDefinition />
         </Grid.RowDefinitions>
         <StackPanel Orientation="Horizontal"  Grid.Row="0">
@@ -22,7 +23,13 @@
             <Label Content="Retention Range (min)"/>
             <TextBox Name="RetentionTol" Text="3" VerticalAlignment="Center" FontSize="12" Width="76"/>
         </StackPanel>
-        <Grid  HorizontalAlignment="Right" VerticalAlignment="Center" Grid.Row="2">
+        <StackPanel Orientation="Horizontal"  Grid.Row="2">
+            <Label Content="Max Charge"/>
+            <TextBox Name="MaxCharge" Text="3" VerticalAlignment="Center" FontSize="12" Width="76"/>
+            <Label Content="Correlation Cutoff"/>
+            <TextBox Name="Cutoff" Text="0.9" VerticalAlignment="Center" FontSize="12" Width="76"/>
+        </StackPanel>
+        <Grid  HorizontalAlignment="Right" VerticalAlignment="Center" Grid.Row="3">
             <Button x:Name="Save"  Content="Save" HorizontalAlignment="Right" VerticalAlignment="Top" Width="75" Margin="0,0,100,0" Click="Save_Click" />
             <Button x:Name="Cancel"  Content="Cancel" HorizontalAlignment="Right" VerticalAlignment="Top" Width="75" Margin="0,0,20,0" Click="Cancel_Click" />
         </Grid>

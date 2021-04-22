@@ -34,7 +34,7 @@ namespace GlycanQuantApp
 
         private void Save_Click(object sender, RoutedEventArgs e)
         {
-            if (SaveTolerance())
+            if (SaveChange())
             {
                 SearchingParameters.Access.Update();
                 Close();
@@ -48,7 +48,7 @@ namespace GlycanQuantApp
         }
 
 
-        private bool SaveTolerance()
+        private bool SaveChange()
         {
             if (double.TryParse(MS1Tol.Text, out double tol))
             {
@@ -69,6 +69,29 @@ namespace GlycanQuantApp
                 MessageBox.Show("Retention value is invalid!");
                 return false;
             }
+
+
+            if (int.TryParse(MaxCharge.Text, out int charge))
+            {
+                ConfigureParameters.Access.MaxCharage = charge;
+            }
+            else
+            {
+                MessageBox.Show("Retention value is invalid!");
+                return false;
+            }
+
+
+            if (double.TryParse(Cutoff.Text, out double cutoff))
+            {
+                ConfigureParameters.Access.Cutoff = cutoff;
+            }
+            else
+            {
+                MessageBox.Show("Retention value is invalid!");
+                return false;
+            }
+
             return true;
         }
 

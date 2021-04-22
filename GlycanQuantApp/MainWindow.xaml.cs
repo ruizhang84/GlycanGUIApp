@@ -53,8 +53,8 @@ namespace GlycanQuantApp
         private void MSMSFileNames_Click(object sender, RoutedEventArgs e)
         {
             OpenFileDialog fileNamesDialog = new OpenFileDialog();
-            fileNamesDialog.Filter = "Raw File|*.raw|MGF File|*.mgf";
-            fileNamesDialog.Title = "Open a MS2 File";
+            fileNamesDialog.Filter = "Raw File|*.raw";
+            fileNamesDialog.Title = "Open a MS File";
             fileNamesDialog.Multiselect = true;
             fileNamesDialog.InitialDirectory = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
 
@@ -104,7 +104,7 @@ namespace GlycanQuantApp
         {
             OpenFileDialog fileNameDialog = new OpenFileDialog();
             fileNameDialog.Filter = "Raw File|*.raw";
-            fileNameDialog.Title = "Open a MS2 File";
+            fileNameDialog.Title = "Open a MS File";
 
             if (fileNameDialog.ShowDialog() == true)
             {
