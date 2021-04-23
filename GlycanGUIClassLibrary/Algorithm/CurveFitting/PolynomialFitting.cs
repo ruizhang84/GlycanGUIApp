@@ -8,7 +8,7 @@ namespace GlycanGUI.Algorithm.CurveFitting
 {
     public class PolynomialFitting : ICurveFitting
     {
-        public double[] Parameter;
+        public double[] parameter;
         public int Order {get; set;}
         public PolynomialFitting(int order=3)
         {
@@ -17,7 +17,7 @@ namespace GlycanGUI.Algorithm.CurveFitting
 
         public void Fit(List<double> x, List<double> y)
         {
-            Parameter = new double[Order + 1];
+            parameter = new double[Order + 1];
             double[,] X = new double[x.Count,Order+1];
             for(int i=0; i < x.Count; i++)
             {
@@ -42,7 +42,7 @@ namespace GlycanGUI.Algorithm.CurveFitting
                     Y);
             for(int i = 0; i < z.GetLength(0); i++)
             {
-                Parameter[i] = z[i, 0];
+                parameter[i] = z[i, 0];
             }
         }
 
@@ -51,9 +51,12 @@ namespace GlycanGUI.Algorithm.CurveFitting
             double unit = 0.0;
             for(int i=0; i <= Order; i++)
             {
-                unit += Parameter[i] * Math.Pow(rentention, i);
+                unit += parameter[i] * Math.Pow(rentention, i);
             }
             return unit;
         }
+
+        public double[] Parameter()
+        { return parameter;  }
     } 
 }

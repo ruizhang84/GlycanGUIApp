@@ -1,4 +1,5 @@
-﻿using GlycanGUI.Algorithm.CurveFitting;
+﻿using GlycanGUI.Algorithm;
+using GlycanGUI.Algorithm.CurveFitting;
 using System;
 using System.Collections.Generic;
 using System.Globalization;
@@ -27,7 +28,7 @@ namespace GlycoGUIApp
 
             // set title
             coefficient.Text = Math.Round(engine.Coefficient(), 4).ToString();
-            CreateEquation(engine.Fitter as PolynomialFitting);
+            CreateEquation(engine.Fitter);
             //// draw curve
             canvas.Children.Add(new VisualHost
             { Visual = CreateCurveDrawingVisual(engine) });
@@ -41,27 +42,40 @@ namespace GlycoGUIApp
             return run;
         }
 
-        private void CreateEquation(PolynomialFitting fitting = null)
+        private void CreateEquation(ICurveFitting fitting = null)
         {
             if (fitting == null)
                 return;
-            double[] param = fitting.Parameter;
-            equation.Inlines.Add(" ");
-            equation.Inlines.Add(Math.Round(param[3], 2).ToString());
-            equation.Inlines.Add("x");
-            equation.Inlines.Add(SuperscriptRun("3"));
-            if (param[2] > 0)
-                equation.Inlines.Add("+");
-            equation.Inlines.Add(Math.Round(param[2], 2).ToString());
-            equation.Inlines.Add("x");
-            equation.Inlines.Add(SuperscriptRun("2"));
-            if (param[1] > 0)
-                equation.Inlines.Add("+");
-            equation.Inlines.Add(Math.Round(param[1], 2).ToString());
-            equation.Inlines.Add("x");
-            if (param[0] > 0)
-                equation.Inlines.Add("+");
-            equation.Inlines.Add(Math.Round(param[0], 2).ToString());
+            double[] param = fitting.Parameter();
+            if (param.Length == 2)
+            {
+                equation.Inlines.Add(" ");
+                equation.Inlines.Add(Math.Round(param[1], 2).ToString());
+                equation.Inlines.Add("ln(x)");
+                if (param[0] > 0)
+                    equation.Inlines.Add("+");
+                equation.Inlines.Add(Math.Round(param[0], 2).ToString());
+            }
+            else
+            {
+                equation.Inlines.Add(" ");
+                equation.Inlines.Add(Math.Round(param[3], 2).ToString());
+                equation.Inlines.Add("x");
+                equation.Inlines.Add(SuperscriptRun("3"));
+                if (param[2] > 0)
+                    equation.Inlines.Add("+");
+                equation.Inlines.Add(Math.Round(param[2], 2).ToString());
+                equation.Inlines.Add("x");
+                equation.Inlines.Add(SuperscriptRun("2"));
+                if (param[1] > 0)
+                    equation.Inlines.Add("+");
+                equation.Inlines.Add(Math.Round(param[1], 2).ToString());
+                equation.Inlines.Add("x");
+                if (param[0] > 0)
+                    equation.Inlines.Add("+");
+                equation.Inlines.Add(Math.Round(param[0], 2).ToString());
+            }
+
         }
 
 

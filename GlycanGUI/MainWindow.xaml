@@ -17,8 +17,13 @@
         <Grid HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Grid.Row="0">
             <StackPanel Orientation="Horizontal">
                 <Label Content="MS/MS File" HorizontalAlignment="Left" VerticalAlignment="Stretch"  Width="76"/>
-                <TextBox x:Name="displayFileName" HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto" HorizontalAlignment="Left" TextWrapping="Wrap" VerticalAlignment="Stretch" Width="500"/>
+                <TextBox x:Name="displayFileName" HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto" HorizontalAlignment="Left" TextWrapping="Wrap" VerticalAlignment="Stretch" Width="400"/>
                 <Button x:Name="MSMSFileName" Content="..." HorizontalAlignment="Left" Width="30" Click="MSMSFileName_Click" Margin="0,0,0,0.333" Height="25" VerticalAlignment="Bottom" />
+                <Label>Fitting:</Label>
+                <ComboBox SelectionChanged="ComboBox_SelectionChanged">
+                    <ComboBoxItem IsSelected="True">Poly</ComboBoxItem>
+                    <ComboBoxItem >Log</ComboBoxItem>
+                </ComboBox>
             </StackPanel>
         </Grid>
         <Grid  HorizontalAlignment="Left" VerticalAlignment="Stretch" Margin="10" Grid.Row="1">

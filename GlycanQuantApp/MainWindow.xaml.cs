@@ -18,6 +18,7 @@ using System.Windows.Threading;
 using GlycanQuant.Engine.Algorithm;
 using SpectrumData;
 using SpectrumData.Reader;
+using GlycanGUI.Algorithm.CurveFitting;
 
 namespace GlycanQuantApp
 {
@@ -146,6 +147,19 @@ namespace GlycanQuantApp
         {
             Interlocked.Increment(ref readingCounter);
             Readingprogress(e.Total);
+        }
+
+        private void ComboBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            var text = ((sender as ComboBox).SelectedItem as ComboBoxItem).Content as string;
+            if (text == "Poly")
+            {
+                engine.Fitter = new PolynomialFitting();
+            }
+            else if (text == "Log")
+            {
+                engine.Fitter = new LogarithmicFitting();
+            }
         }
     }
 

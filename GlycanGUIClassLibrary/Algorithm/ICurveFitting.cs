@@ -8,5 +8,6 @@ namespace GlycanGUI.Algorithm
     {
         void Fit(List<double> rentention, List<double> guis);
         double GlucoseUnit(double rentention);
+        double[] Parameter();
     }
 }

@@ -1,4 +1,5 @@
-﻿using Microsoft.Win32;
+﻿using GlycanGUI.Algorithm.CurveFitting;
+using Microsoft.Win32;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -96,6 +97,19 @@ namespace GlycoGUIApp
             {
                 rt = Math.Round(Math.Max(0, engine.Normalize(rt)), 4);
                 NormalizedTime.Text = rt.ToString();
+            }
+        }
+
+        private void ComboBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            var text = ((sender as ComboBox).SelectedItem as ComboBoxItem).Content as string;
+            if (text == "Poly")
+            {
+                engine.Fitter = new PolynomialFitting();
+            }
+            else if (text == "Log")
+            {
+                engine.Fitter = new LogarithmicFitting();
             }
         }
     }

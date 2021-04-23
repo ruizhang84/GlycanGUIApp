@@ -18,7 +18,7 @@ namespace GlycanQuantApp
 {
     public class NormalizerEngine
     {
-        public ICurveFitting Fitter { get; set; }
+        public ICurveFitting Fitter { get; set; } = new PolynomialFitting();
         public double PPM { get; set; } = 5;
         private readonly object resultLock = new object();
 
@@ -61,8 +61,6 @@ namespace GlycanQuantApp
 
             IGUISequencer sequencer = new DynamicProgrammingSequencer();
             List<GUI> guiPoints = sequencer.Choose(points);
-
-            Fitter = new PolynomialFitting();
 
             Dictionary<int, GUI> guiSelected = new Dictionary<int, GUI>();
             foreach (GUI gui in guiPoints)

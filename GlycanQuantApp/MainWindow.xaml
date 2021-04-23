@@ -31,8 +31,13 @@
         <Border HorizontalAlignment="Left" VerticalAlignment="Stretch" Grid.Row="3" Margin="10">
             <StackPanel Orientation="Horizontal">
                 <Label Content="GUI MS" HorizontalAlignment="Left" VerticalAlignment="Stretch"  Width="60"/>
-                <TextBox x:Name="displayFileName" HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto" HorizontalAlignment="Left" TextWrapping="Wrap" VerticalAlignment="Stretch" Width="600"/>
+                <TextBox x:Name="displayFileName" HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto" HorizontalAlignment="Left" TextWrapping="Wrap" VerticalAlignment="Stretch" Width="480"/>
                 <Button x:Name="GUIFileName" Content="..." HorizontalAlignment="Left" Width="30" Click="GUI_Click"  Height="25" VerticalAlignment="Bottom" />
+                <Label>Fitting: </Label>
+                <ComboBox SelectionChanged="ComboBox_SelectionChanged">
+                    <ComboBoxItem IsSelected="True">Poly</ComboBoxItem>
+                    <ComboBoxItem >Log</ComboBoxItem>
+                </ComboBox>
             </StackPanel>
         </Border>
         <Border  HorizontalAlignment="Left" VerticalAlignment="Stretch" Grid.Row="4" Margin="10">
