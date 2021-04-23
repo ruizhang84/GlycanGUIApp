@@ -30,6 +30,13 @@ namespace GlycanQuantApp
             {
                 MS1TolByDalton.IsChecked = true;
             }
+
+            if (SearchingParameters.Access.Ammonium)
+                Ammonium.IsChecked = true;
+            if (SearchingParameters.Access.Hydrogen)
+                Hydrogen.IsChecked = true;
+            if (SearchingParameters.Access.Potassium)
+                Potassium.IsChecked = true;
         }
 
         private void Save_Click(object sender, RoutedEventArgs e)
@@ -90,6 +97,19 @@ namespace GlycanQuantApp
             {
                 MessageBox.Show("Retention value is invalid!");
                 return false;
+            }
+
+            if (Hydrogen.IsChecked == false &&
+                            Potassium.IsChecked == false && Ammonium.IsChecked == false)
+            {
+                MessageBox.Show("Choose at least one Ion type!");
+                return false;
+            }
+            else
+            {
+                ConfigureParameters.Access.Hydrogen = Hydrogen.IsChecked == true;
+                ConfigureParameters.Access.Potassium = Potassium.IsChecked == true;
+                ConfigureParameters.Access.Ammonium = Ammonium.IsChecked == true;
             }
 
             return true;

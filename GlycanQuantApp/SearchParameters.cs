@@ -17,6 +17,9 @@ namespace GlycanQuantApp
         // parameter
         public int MaxCharage { get; set; } = 3;
         public double Cutoff { get; set; } = 0.9;
+        public bool Hydrogen { get; set; } = true;
+        public bool Potassium { get; set; } = false;
+        public bool Ammonium { get; set; } = false;
 
         //file
         public List<string> MSMSFiles { get; set; } = new List<string>();
@@ -32,6 +35,9 @@ namespace GlycanQuantApp
             retentionRange = ConfigureParameters.Access.retentionRange;
             MaxCharage = ConfigureParameters.Access.MaxCharage;
             Cutoff = ConfigureParameters.Access.Cutoff;
+            Hydrogen = ConfigureParameters.Access.Hydrogen;
+            Potassium = ConfigureParameters.Access.Potassium;
+            Ammonium = ConfigureParameters.Access.Ammonium;
         }
 
         protected static readonly Lazy<SearchingParameters>
@@ -52,6 +58,9 @@ namespace GlycanQuantApp
         // parameter
         public int MaxCharage { get; set; } = 3;
         public double Cutoff { get; set; } = 0.9;
+        public bool Hydrogen { get; set; } = true;
+        public bool Potassium { get; set; } = false;
+        public bool Ammonium { get; set; } = false;
 
         protected static readonly Lazy<ConfigureParameters>
             lazy = new Lazy<ConfigureParameters>(() => new ConfigureParameters());

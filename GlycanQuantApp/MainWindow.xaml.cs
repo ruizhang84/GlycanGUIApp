@@ -19,6 +19,7 @@ using GlycanQuant.Engine.Algorithm;
 using SpectrumData;
 using SpectrumData.Reader;
 using GlycanGUI.Algorithm.CurveFitting;
+using GlycanQuant.Model.Util;
 
 namespace GlycanQuantApp
 {
@@ -91,6 +92,17 @@ namespace GlycanQuantApp
                 MessageBox.Show("Please choose MS/MS files");
                 return;
             }
+
+            // init ions 
+            List<double> ions = new List<double>();
+            if (SearchingParameters.Access.Hydrogen)
+                ions.Add(Calculator.proton);
+            if (SearchingParameters.Access.Potassium)
+                ions.Add(Calculator.potassium);
+            if (SearchingParameters.Access.Ammonium)
+                ions.Add(Calculator.ammonium);
+            Calculator.To.SetChargeIons(ions);
+
             await Task.Run(() =>
             {
                 foreach(string path in SearchingParameters.Access.MSMSFiles)
