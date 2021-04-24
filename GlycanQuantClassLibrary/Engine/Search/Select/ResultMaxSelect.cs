@@ -50,12 +50,11 @@ namespace GlycanQuant.Engine.Search.Select
                 Dictionary<double, List<IResult>> resultGroup =
                     resultMap[glycanName].GroupBy(r => Math.Round(r.GetMZ(), pricison))
                     .ToDictionary(g => g.Key, g => g.OrderBy(r => r.GetScan()).ToList());
+                filtered[glycanName] = new List<SelectResult>();
 
-                foreach(double mz in resultGroup.Keys)
+                foreach (double mz in resultGroup.Keys)
                 {
                     List<IResult> collect = new List<IResult>();
-                    filtered[glycanName] = new List<SelectResult>();
-
                     foreach (IResult r in resultGroup[mz])
                     {
                         int scan = r.GetScan();

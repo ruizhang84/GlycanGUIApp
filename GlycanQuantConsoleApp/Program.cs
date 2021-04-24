@@ -157,7 +157,7 @@ namespace GlycanQuantConsoleApp
 
                 for (int scan = spectrumReader.GetFirstScan(); scan <= spectrumReader.GetLastScan(); scan++)
                 {
-                    if (spectrumReader.GetMSnOrder(scan) != 1 || scan != 3943)
+                    if (spectrumReader.GetMSnOrder(scan) != 1)
                         continue;
                     ISpectrum spectrum = spectrumReader.GetSpectrum(scan);
 
