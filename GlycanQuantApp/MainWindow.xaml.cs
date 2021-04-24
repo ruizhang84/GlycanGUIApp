@@ -97,8 +97,8 @@ namespace GlycanQuantApp
             List<double> ions = new List<double>();
             if (SearchingParameters.Access.Hydrogen)
                 ions.Add(Calculator.proton);
-            if (SearchingParameters.Access.Potassium)
-                ions.Add(Calculator.potassium);
+            if (SearchingParameters.Access.Sodium)
+                ions.Add(Calculator.sodium);
             if (SearchingParameters.Access.Ammonium)
                 ions.Add(Calculator.ammonium);
             Calculator.To.SetChargeIons(ions);

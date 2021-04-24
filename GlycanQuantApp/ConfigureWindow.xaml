@@ -33,7 +33,7 @@
         <StackPanel Grid.Row="3" VerticalAlignment="Center" Orientation="Horizontal">
             <Label Content="Ions Types: " />
             <CheckBox Name="Hydrogen" Content="Hydrogen " Margin="0 5" IsChecked="True"/>
-            <CheckBox Name="Potassium" Content="Na " Margin="0 5"/>
+            <CheckBox Name="Sodium" Content="Na " Margin="0 5"/>
             <CheckBox Name="Ammonium" Content="NH4 " Margin="0 5"/>
         </StackPanel>
 

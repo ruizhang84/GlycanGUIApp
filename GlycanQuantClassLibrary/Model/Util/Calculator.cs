@@ -22,7 +22,7 @@ namespace GlycanQuant.Model.Util
         protected List<double> ions;
         public static double proton = 1.0078;
         public static double ammonium = 14.00307 + 1.0078 * 4;
-        public static double potassium = 22.98977;
+        public static double sodium = 22.98977;
 
         public double ComputePPM(double expected, double observed)
         {

@@ -35,8 +35,8 @@ namespace GlycanQuantApp
                 Ammonium.IsChecked = true;
             if (SearchingParameters.Access.Hydrogen)
                 Hydrogen.IsChecked = true;
-            if (SearchingParameters.Access.Potassium)
-                Potassium.IsChecked = true;
+            if (SearchingParameters.Access.Sodium)
+                Sodium.IsChecked = true;
         }
 
         private void Save_Click(object sender, RoutedEventArgs e)
@@ -100,7 +100,7 @@ namespace GlycanQuantApp
             }
 
             if (Hydrogen.IsChecked == false &&
-                            Potassium.IsChecked == false && Ammonium.IsChecked == false)
+                            Sodium.IsChecked == false && Ammonium.IsChecked == false)
             {
                 MessageBox.Show("Choose at least one Ion type!");
                 return false;
@@ -108,7 +108,7 @@ namespace GlycanQuantApp
             else
             {
                 ConfigureParameters.Access.Hydrogen = Hydrogen.IsChecked == true;
-                ConfigureParameters.Access.Potassium = Potassium.IsChecked == true;
+                ConfigureParameters.Access.Sodium = Sodium.IsChecked == true;
                 ConfigureParameters.Access.Ammonium = Ammonium.IsChecked == true;
             }
 

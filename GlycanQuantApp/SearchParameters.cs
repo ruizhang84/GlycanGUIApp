@@ -18,7 +18,7 @@ namespace GlycanQuantApp
         public int MaxCharage { get; set; } = 3;
         public double Cutoff { get; set; } = 0.9;
         public bool Hydrogen { get; set; } = true;
-        public bool Potassium { get; set; } = false;
+        public bool Sodium { get; set; } = false;
         public bool Ammonium { get; set; } = false;
 
         //file
@@ -36,7 +36,7 @@ namespace GlycanQuantApp
             MaxCharage = ConfigureParameters.Access.MaxCharage;
             Cutoff = ConfigureParameters.Access.Cutoff;
             Hydrogen = ConfigureParameters.Access.Hydrogen;
-            Potassium = ConfigureParameters.Access.Potassium;
+            Sodium = ConfigureParameters.Access.Sodium;
             Ammonium = ConfigureParameters.Access.Ammonium;
         }
 
@@ -59,7 +59,7 @@ namespace GlycanQuantApp
         public int MaxCharage { get; set; } = 3;
         public double Cutoff { get; set; } = 0.9;
         public bool Hydrogen { get; set; } = true;
-        public bool Potassium { get; set; } = false;
+        public bool Sodium { get; set; } = false;
         public bool Ammonium { get; set; } = false;
 
         protected static readonly Lazy<ConfigureParameters>

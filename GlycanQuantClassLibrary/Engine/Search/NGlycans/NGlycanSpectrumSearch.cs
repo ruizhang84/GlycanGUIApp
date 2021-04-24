@@ -10,6 +10,7 @@ using GlycanQuant.Engine.Search.Envelope;
 using GlycanQuant.Spectrum.Process;
 using GlycanQuant.Spectrum.Charges;
 using GlycanQuant.Model.Util;
+using System.IO;
 
 namespace GlycanQuant.Engine.Search.NGlycans
 {
@@ -45,8 +46,9 @@ namespace GlycanQuant.Engine.Search.NGlycans
             foreach (IGlycanPeak glycan in glycans)
             {
                 IResult result = null;
+                double bestIntensity = 0;
                 double bestScore = 0;
-                for (int charge = 1; charge < maxCharge; charge++)
+                for (int charge = 1; charge <= maxCharge; charge++)
                 {
                     List<double> mzList = Calculator.To.ComputeMZ(glycan.HighestPeak(), charge);
                     foreach(double mz in mzList)
@@ -60,15 +62,27 @@ namespace GlycanQuant.Engine.Search.NGlycans
 
                         IResult temp = monoisotopicSearcher.Match(glycan, clusters);
                         double score = temp.Score();
-                        if (score > cutoff && score > bestScore)
+                        double intensity = temp.Matches().Select(m => m.GetIntensity()).Sum();
+                        if (score > cutoff)
                         {
-                            bestScore = score;
+                            if (intensity > bestIntensity)
+                            {
+                                bestIntensity = intensity;
+                            }
+                            else if (intensity == bestIntensity && score > bestScore)
+                            {
+                                bestScore = score;
+                            }
+                            else
+                            {
+                                continue;
+                            }
                             result = temp;
                             result.SetMZ(mz);
                             result.SetRetention(spectrum.GetRetention());
                             result.SetCharge(charge);
                             result.SetScan(spectrum.GetScanNum());
-                        }
+                        }          
                     }
                 }
                 if (result != null)

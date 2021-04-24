@@ -11,6 +11,7 @@ using GlycanQuant.Engine.Search;
 using GlycanQuant.Engine.Search.Envelope;
 using GlycanQuant.Engine.Search.NGlycans;
 using GlycanQuant.Engine.Search.Select;
+using GlycanQuant.Model.Util;
 using GlycanQuant.Spectrum.Process;
 using GlycanQuant.Spectrum.Process.PeakPicking;
 using SpectrumData;
@@ -119,10 +120,15 @@ namespace GlycanQuantConsoleApp
         static void Main(string[] args)
         {
 
-            string dir = @"D:\Data\raw\C18";
+            //string dir = @"D:\Data\raw\C18";
+            string dir = @"C:\Users\iruiz\Downloads\GUI\compare\data";
             string[] files = Directory.GetFiles(dir);
 
-            foreach(string path in files)
+            List<double> ions = new List<double>();
+            ions.Add(Calculator.proton);
+            Calculator.To.SetChargeIons(ions);
+
+            foreach (string path in files)
             {
                 Stopwatch stopWatch = new Stopwatch();
                 stopWatch.Start();
@@ -136,6 +142,7 @@ namespace GlycanQuantConsoleApp
                 IProcess spectrumProcess = new LocalNeighborPicking();
                 ISpectrumSearch spectrumSearch = new NGlycanSpectrumSearch(glycans,
                     spectrumProcess, envelopeProcess, monoisotopicSearcher);
+
                 ISpectrumReader spectrumReader = new ThermoRawSpectrumReader();
                 spectrumReader.Init(path);
 
@@ -150,13 +157,14 @@ namespace GlycanQuantConsoleApp
 
                 for (int scan = spectrumReader.GetFirstScan(); scan <= spectrumReader.GetLastScan(); scan++)
                 {
-                    if (spectrumReader.GetMSnOrder(scan) != 1)
+                    if (spectrumReader.GetMSnOrder(scan) != 1 || scan != 3943)
                         continue;
                     ISpectrum spectrum = spectrumReader.GetSpectrum(scan);
+
                     List<IResult> results = spectrumSearch.Search(spectrum);
                     resultSelect.Add(results);
-                }
 
+                }
                 List<string> outputString = new List<string>();
                 Dictionary<string, List<SelectResult>> resultContainer = resultSelect.Produce();
                 double areaIndex = Area(spectrumReader, GuiPoints);
