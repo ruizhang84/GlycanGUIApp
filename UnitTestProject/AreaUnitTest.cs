@@ -40,10 +40,10 @@ namespace UnitTestProject
 
             using (StreamWriter file = new(@"C:\Users\iruiz\Downloads\GUI\compare\data\WriteLines2.csv"))
             {
-                file.WriteLine("glycan,mass,mz,charge,area");
+                file.WriteLine("glycan,mass,mz,charge,score,area");
                 //for (int scan = spectrumReader.GetFirstScan(); scan <= spectrumReader.GetLastScan(); scan++)
                 //{
-                int scan = 3943;
+                int scan = 2931; // 3943;
                 if (spectrumReader.GetMSnOrder(scan) != 1) return;
                 ISpectrum spectrum = spectrumReader.GetSpectrum(scan);
 
@@ -66,6 +66,7 @@ namespace UnitTestProject
                         r.Glycan().GetGlycan().Mass().ToString() + "," +
                         r.GetMZ().ToString() + "," +
                         r.GetCharge().ToString() + "," +
+                        r.Score().ToString() + "," +
                         area.ToString();
                     file.WriteLine(output);
                 }

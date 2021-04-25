@@ -81,17 +81,21 @@ namespace GlycanQuant.Engine.Quant.XIC
 
         public double Area(SelectResult result)
         {
-            // top 3 neighbor get top 3 peaks
-            List<IResult> top = result.Results.
-                OrderByDescending(r => r.Matches().Sum(p => p.GetIntensity())).Take(3).ToList();
+            // sum of each cluster by top 3 peaks
             double area = 0;
-            foreach(IResult r in top)
+            foreach(IResult r in result.Results)
             {
-                area += r.Matches().
-                    OrderByDescending(p => p.GetIntensity()).Take(3).Sum(p => p.GetIntensity());
+                area += OneArea(r);
             }
 
             return area;
+        }
+
+        public double OneArea(IResult result)
+        {
+            // top 3 peaks
+            return result.Matches().
+                OrderByDescending(r => r.GetIntensity()).Take(3).Sum(r => r.GetIntensity());
         }
     }
 }

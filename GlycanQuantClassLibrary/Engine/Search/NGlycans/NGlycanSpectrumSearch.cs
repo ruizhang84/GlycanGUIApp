@@ -91,30 +91,6 @@ namespace GlycanQuant.Engine.Search.NGlycans
             return results;
         }
 
-        public IResult Search(ISpectrum spectrum, IGlycanPeak glycan ,
-            double mz, int charge)
-        {
-
-            ISpectrum spec = spectrumProcessor.Process(spectrum);
-            envelopeProcessor.Init(spec);
-
-            List<IPeak> targets = envelopeProcessor.Search(mz);
-            if (targets.Count == 0)
-                return null;
-
-            SortedDictionary<int, List<IPeak>> clusters =
-                envelopeProcessor.Cluster(mz, charge);
-
-            IResult result = monoisotopicSearcher.Match(glycan, clusters);
-            if (result.Matches().Count == 0)
-                return null;
-            
-            result.SetCharge(charge);
-            result.SetMZ(mz);
-            result.SetScan(spectrum.GetScanNum());
-            return result;
-        }
-
         public void SetTolerance(double tol)
         {
             envelopeProcessor.SetTolerance(tol);

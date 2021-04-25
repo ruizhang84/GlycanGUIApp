@@ -1,5 +1,6 @@
 ﻿using GlycanQuant.Engine.Algorithm;
 using GlycanQuant.Engine.Builder;
+using GlycanQuantClassLibrary.Engine.Search.Select;
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
@@ -14,16 +15,21 @@ namespace GlycanQuant.Engine.Search.Select
         ConcurrentDictionary<string, List<IResult>> resultMap 
             = new ConcurrentDictionary<string, List<IResult>>();
 
-        private double timeTol = 3;
         private int pricison = 2;
+        private ResultSplit splitor;
 
-        public ResultMaxSelect(double timeTol=3)
+        public ResultMaxSelect(double timeTol=3, double cutoff=0.5)
         {
-            this.timeTol = timeTol;
+            splitor = new ResultSplit(timeTol, cutoff);
         }
         public void SetRetentionTolerance(double tol)
         {
-            timeTol = tol;
+            splitor.SetRetentionTolerance(tol);
+        }
+
+        public void SetCutoff(double cutoff)
+        {
+            splitor.SetCutoff(cutoff);
         }
 
         public void Add(List<IResult> results)
@@ -39,7 +45,6 @@ namespace GlycanQuant.Engine.Search.Select
             }
         }
 
-
         public Dictionary<string, List<SelectResult>> Produce()
         {
             Dictionary<string, List<SelectResult>> filtered 
@@ -54,33 +59,7 @@ namespace GlycanQuant.Engine.Search.Select
 
                 foreach (double mz in resultGroup.Keys)
                 {
-                    List<IResult> collect = new List<IResult>();
-                    foreach (IResult r in resultGroup[mz])
-                    {
-                        int scan = r.GetScan();
-                        if (collect.Count == 0)
-                        {
-                            collect.Add(r);
-                        }
-                        else
-                        {
-                            // check scan continue, check mz same
-                            double retention = r.GetRetention();
-                            if (collect.Last().GetRetention() + timeTol < retention)
-                            {
-                                IResult present = Select(collect);
-                                filtered[glycanName].Add(new SelectResult(present, collect));
-                                collect = new List<IResult>();
-                            }
-                            collect.Add(r);
-                        }
-                    }
-
-                    if (collect.Count > 0)
-                    {
-                        IResult present = Select(collect);
-                        filtered[glycanName].Add(new SelectResult(present, collect));
-                    }
+                    splitor.Split(resultGroup[mz], filtered[glycanName]);
                 }
             }
 
