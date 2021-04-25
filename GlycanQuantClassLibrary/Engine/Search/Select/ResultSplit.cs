@@ -9,7 +9,7 @@ namespace GlycanQuantClassLibrary.Engine.Search.Select
 {
     public class ResultSplit
     {
-        private double cutoff = 0.5;
+        private double cutoff = 0.3;
         private double timeTol = 1;
 
         public ResultSplit(double timeTol, double cutoff)
@@ -28,107 +28,106 @@ namespace GlycanQuantClassLibrary.Engine.Search.Select
             this.cutoff = cutoff;
         }
 
+        double Area(IResult result)
+        {
+            return result.Matches().Sum(p => p.GetIntensity());
+        }
+
+        public void Picking(List<IResult> results, 
+            List<SelectResult> selected, HashSet<int> visited)
+        {
+            // local maximum
+            int local = 0;
+            double bestIntensity = 0;
+            for(int i = 0; i < results.Count; i++)
+            {
+                IResult result = results[i];
+                double intensity = Area(result);
+                if (intensity > bestIntensity)
+                {
+                    bestIntensity = intensity;
+                    local = i;
+                }
+            }
+
+            // cutoff
+            List<IResult> collector = new List<IResult>();
+            double value = cutoff * results[local].Matches().Sum(r => r.GetIntensity());
+            int idx = local;
+
+            // left below cutoff
+            while (idx >= 0)
+            {
+                double intensity = results[idx].Matches().Sum(r => r.GetIntensity());
+                if (intensity < value)
+                    break;
+                visited.Add(idx);
+                collector.Add(results[idx]);
+                idx--;
+            }
+            // left local minum
+            while (idx > 0)
+            {
+                double intensity = results[idx].Matches().Sum(r => r.GetIntensity());
+                double nextIntensity = results[idx - 1].Matches().Sum(r => r.GetIntensity());
+                if (nextIntensity > intensity)
+                    break;
+                visited.Add(idx);
+                collector.Add(results[idx]);
+                idx--;
+            }
+
+            idx = local + 1;
+
+            // right below cutoff
+            while (idx < results.Count)
+            {
+                double intensity = results[idx].Matches().Sum(r => r.GetIntensity());
+                if (intensity < value)
+                    break;
+                visited.Add(idx);
+                collector.Add(results[idx]);
+                idx++;
+            }
+            // right local minum
+            while (idx < results.Count - 1)
+            {
+                double intensity = results[idx].Matches().Sum(r => r.GetIntensity());
+                double nextIntensity = results[idx + 1].Matches().Sum(r => r.GetIntensity());
+                if (nextIntensity > intensity)
+                    break;
+                visited.Add(idx);
+                collector.Add(results[idx]);
+                idx++;
+            }
+            selected.Add(new SelectResult(results[local], collector));
+        }
 
         public void Split(List<IResult> results, List<SelectResult> selected)
         {
-            int index = 1;
-            int end = results.Count - 1;
-            int head = index + 1;
-
-            //if (results.First().Glycan().GetGlycan().Name() == "5-6-1-2-0")
-            //    Console.WriteLine("here");
-
-            // local maximum
-
-            List<int> localMax = new List<int>();
-            double maxValue = cutoff * results.Select(r => r.Matches().Sum(p => p.GetIntensity())).Max();
-            while (index < end)
-            {
-                if (results[index - 1].Matches().Sum(p=> p.GetIntensity()) < 
-                    results[index].Matches().Sum(p => p.GetIntensity()))
-                {
-                    head = index + 1;
-                }
-
-                while (head < end
-                    && results[head].Matches().Sum(p => p.GetIntensity())
-                    == results[index].Matches().Sum(p => p.GetIntensity()))
-                {
-                    head++;
-                }
-
-                if (results[head].Matches().Sum(p => p.GetIntensity())
-                    < results[index].Matches().Sum(p => p.GetIntensity()))
-                {
-                    if (results[index].Matches().Sum(p => p.GetIntensity()) > maxValue)
-                        localMax.Add(index);
-                    index = head;
-                }
-                index++;
-            }
-
-            localMax = localMax.
-                OrderByDescending(i => results[i].Matches().Sum(p => p.GetIntensity())).ToList();
-
-            // cutoff
             HashSet<int> visited = new HashSet<int>();
-            foreach(int local in localMax)
+            Picking(results, selected, visited);
+
+            // start
+            List<IResult> start = new List<IResult>();
+            for(int i = 0; i < results.Count; i++)
             {
-                if (visited.Contains(local))
-                    continue;
-                List<IResult> collector = new List<IResult>();
-
-                double value = cutoff * results[local].Matches().Sum(r => r.GetIntensity());
-                int idx = local;
-
-                // left below cutoff
-                while (idx >=0)
-                {
-                    double intensity = results[idx].Matches().Sum(r => r.GetIntensity());
-                    if (intensity < value)
-                        break;
-                    visited.Add(idx);
-                    collector.Add(results[idx]);
-                    idx--;
-                }
-                // left local minum
-                while (idx > 0)
-                {
-                    double intensity = results[idx].Matches().Sum(r => r.GetIntensity());
-                    double nextIntensity = results[idx-1].Matches().Sum(r => r.GetIntensity());
-                    if (nextIntensity > intensity)
-                        break;
-                    visited.Add(idx);
-                    collector.Add(results[idx]);
-                    idx--;
-                }
-
-                idx = local + 1;
-
-                // right below cutoff
-                while (idx < results.Count)
-                {
-                    double intensity = results[idx].Matches().Sum(r => r.GetIntensity());
-                    if (intensity < value)
-                        break;
-                    visited.Add(idx);
-                    collector.Add(results[idx]);
-                    idx++;
-                }
-                // right local minum
-                while (idx < results.Count-1)
-                {
-                    double intensity = results[idx].Matches().Sum(r => r.GetIntensity());
-                    double nextIntensity = results[idx + 1].Matches().Sum(r => r.GetIntensity());
-                    if (nextIntensity > intensity)
-                        break;
-                    visited.Add(idx);
-                    collector.Add(results[idx]);
-                    idx++;
-                }
-
-                selected.Add(new SelectResult(results[local], collector));
+                if (visited.Contains(i))
+                    break;
+                start.Add(results[i]);
             }
+
+            // end
+            List<IResult> end = new List<IResult>();
+            for (int i = visited.Max() + 1; i < results.Count; i++)
+            {
+                end.Add(results[i]);
+            }
+
+            if (start.Count > 0)
+                Split(start, selected);
+            if (end.Count > 0)
+                Split(end, selected);
 
         }
     }
