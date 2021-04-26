@@ -18,13 +18,13 @@ namespace GlycanQuant.Engine.Search.Select
         private int pricison = 2;
         private ResultSplit splitor;
 
-        public ResultMaxSelect(double timeTol=3, double cutoff=0.5)
+        public ResultMaxSelect(double threshold=0.5, double cutoff=0.5)
         {
-            splitor = new ResultSplit(timeTol, cutoff);
+            splitor = new ResultSplit(threshold, cutoff);
         }
-        public void SetRetentionTolerance(double tol)
+        public void SetThreshold(double threshold)
         {
-            splitor.SetRetentionTolerance(tol);
+            splitor.SetThreshold(threshold);
         }
 
         public void SetCutoff(double cutoff)

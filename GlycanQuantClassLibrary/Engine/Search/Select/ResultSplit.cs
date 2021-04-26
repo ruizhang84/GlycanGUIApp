@@ -9,18 +9,18 @@ namespace GlycanQuantClassLibrary.Engine.Search.Select
 {
     public class ResultSplit
     {
-        private double cutoff = 0.3;
-        private double timeTol = 1;
+        private double cutoff = 0.5;
+        private double threshold = 0.5;
 
-        public ResultSplit(double timeTol, double cutoff)
+        public ResultSplit(double threshold, double cutoff)
         {
-            this.timeTol = timeTol;
+            this.threshold = threshold;
             this.cutoff = cutoff;
         }
 
-        public void SetRetentionTolerance(double timeTol)
+        public void SetThreshold(double threshold)
         {
-            this.timeTol = timeTol;
+            this.threshold = threshold;
         }
 
         public void SetCutoff(double cutoff)
@@ -33,102 +33,128 @@ namespace GlycanQuantClassLibrary.Engine.Search.Select
             return result.Matches().Sum(p => p.GetIntensity());
         }
 
-        public void Picking(List<IResult> results, 
-            List<SelectResult> selected, HashSet<int> visited)
+        double Percentile(IEnumerable<double> seq, double percentile)
         {
-            // local maximum
-            int local = 0;
-            double bestIntensity = 0;
-            for(int i = 0; i < results.Count; i++)
-            {
-                IResult result = results[i];
-                double intensity = Area(result);
-                if (intensity > bestIntensity)
-                {
-                    bestIntensity = intensity;
-                    local = i;
-                }
-            }
+            var elements = seq.ToArray();
+            Array.Sort(elements);
+            double realIndex = percentile * (elements.Length - 1);
+            int index = (int)realIndex;
+            double frac = realIndex - index;
+            if (index + 1 < elements.Length)
+                return elements[index] * (1 - frac) + elements[index + 1] * frac;
+            else
+                return elements[index];
+        }
+
+        List<IResult> Collect(List<IResult> results, 
+            int apex, HashSet<int> visited)
+        {
+            List<IResult> collector = new List<IResult>();
+            if (visited.Contains(apex))
+                return collector;
 
             // cutoff
-            List<IResult> collector = new List<IResult>();
-            double value = cutoff * results[local].Matches().Sum(r => r.GetIntensity());
-            int idx = local;
+            double value = cutoff * Area(results[apex]);
+            int idx = apex;
 
             // left below cutoff
             while (idx >= 0)
             {
-                double intensity = results[idx].Matches().Sum(r => r.GetIntensity());
+                if (visited.Contains(idx))
+                    break;
+                double intensity = Area(results[idx]);
                 if (intensity < value)
                     break;
                 visited.Add(idx);
                 collector.Add(results[idx]);
                 idx--;
             }
-            // left local minum
+            // left local minimum
             while (idx > 0)
             {
-                double intensity = results[idx].Matches().Sum(r => r.GetIntensity());
-                double nextIntensity = results[idx - 1].Matches().Sum(r => r.GetIntensity());
+                if (visited.Contains(idx-1))
+                    break;
+                double intensity = Area(results[idx]);
+                double nextIntensity = Area(results[idx - 1]);
                 if (nextIntensity > intensity)
                     break;
+                idx--;
                 visited.Add(idx);
                 collector.Add(results[idx]);
-                idx--;
             }
 
-            idx = local + 1;
+            idx = apex + 1;
 
             // right below cutoff
             while (idx < results.Count)
             {
-                double intensity = results[idx].Matches().Sum(r => r.GetIntensity());
+                if (visited.Contains(idx))
+                    break;
+                double intensity = Area(results[idx]);
                 if (intensity < value)
                     break;
                 visited.Add(idx);
                 collector.Add(results[idx]);
                 idx++;
             }
-            // right local minum
+            // right local minimum
             while (idx < results.Count - 1)
             {
-                double intensity = results[idx].Matches().Sum(r => r.GetIntensity());
-                double nextIntensity = results[idx + 1].Matches().Sum(r => r.GetIntensity());
+                if (visited.Contains(idx + 1))
+                    break;
+                double intensity = Area(results[idx]);
+                double nextIntensity = Area(results[idx + 1]);
                 if (nextIntensity > intensity)
                     break;
+                idx++;
                 visited.Add(idx);
                 collector.Add(results[idx]);
-                idx++;
             }
-            selected.Add(new SelectResult(results[local], collector));
+            return collector;
+        }
+
+        List<int> Picking(List<IResult> results)
+        {
+            List<int> localMax = new List<int>();
+
+            int index = 1;
+            int end = results.Count - 1;
+            int head = index + 1;
+            while (index < end)
+            {
+                if (Area(results[index - 1]) < Area(results[index]))
+                {
+                    head = index + 1;
+                }
+
+                while (head < end
+                    && Area(results[head]) == Area(results[index]))
+                {
+                    head++;
+                }
+
+                if (Area(results[head]) < Area(results[index]))
+                {
+                    localMax.Add(index);
+                    index = head;
+                }
+                index++;
+            }
+            return localMax;
         }
 
         public void Split(List<IResult> results, List<SelectResult> selected)
         {
+            List<int> localMax = Picking(results).OrderByDescending(i => Area(results[i])).ToList();
             HashSet<int> visited = new HashSet<int>();
-            Picking(results, selected, visited);
 
-            // start
-            List<IResult> start = new List<IResult>();
-            for(int i = 0; i < results.Count; i++)
+            double noise = Percentile(results.Select(p => Area(p)), threshold);
+            foreach (int apex in localMax)
             {
-                if (visited.Contains(i))
-                    break;
-                start.Add(results[i]);
+                List<IResult> collector = Collect(results, apex, visited);
+                if (Area(results[apex]) > noise)
+                    selected.Add(new SelectResult(results[apex], collector));
             }
-
-            // end
-            List<IResult> end = new List<IResult>();
-            for (int i = visited.Max() + 1; i < results.Count; i++)
-            {
-                end.Add(results[i]);
-            }
-
-            if (start.Count > 0)
-                Split(start, selected);
-            if (end.Count > 0)
-                Split(end, selected);
-
         }
     }
 }

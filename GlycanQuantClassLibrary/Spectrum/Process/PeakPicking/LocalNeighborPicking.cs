@@ -11,6 +11,11 @@ namespace GlycanQuant.Spectrum.Process.PeakPicking
     {
         protected double precision = 0.1;
 
+        public LocalNeighborPicking(double precision = 0.1)
+        {
+            this.precision = precision;
+        }
+
         protected virtual List<IPeak> InsertPeaks(ISpectrum spectrum)
         {
             List<IPeak> peaks = new List<IPeak>();
