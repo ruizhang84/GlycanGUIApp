@@ -3,8 +3,6 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 16
 VisualStudioVersion = 16.0.31025.194
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GlycanSpectrum", "GlycanSpectrum\GlycanSpectrum.csproj", "{2E25ADB7-7773-4E2D-B046-FAE91310E3D0}"
-EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SpectrumDataClassLibrary", "SpectrumDataClassLibrary\SpectrumDataClassLibrary.csproj", "{CD74CB1F-2D46-4FDE-8979-E46772AF6CCB}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "UnitTestProject", "UnitTestProject\UnitTestProject.csproj", "{4225141C-7F59-46AD-BB65-E3F343DFEBA1}"
@@ -21,6 +19,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GlycanQuantConsoleApp", "Gl
 EndProject
 Project("{54435603-DBB4-11D2-8724-00A0C9A8B90C}") = "GycanGUISetup", "GycanGUISetup\GycanGUISetup.vdproj", "{0BF8802C-7AF3-4DA0-92EF-AE5C1B9DF5ED}"
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GlycanSpectrum", "GlycanSpectrum\GlycanSpectrum.csproj", "{B6479354-2D57-45B5-8569-BEEC94D12805}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -29,14 +29,6 @@ Global
 		Release|x64 = Release|x64
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{2E25ADB7-7773-4E2D-B046-FAE91310E3D0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{2E25ADB7-7773-4E2D-B046-FAE91310E3D0}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{2E25ADB7-7773-4E2D-B046-FAE91310E3D0}.Debug|x64.ActiveCfg = Debug|x64
-		{2E25ADB7-7773-4E2D-B046-FAE91310E3D0}.Debug|x64.Build.0 = Debug|x64
-		{2E25ADB7-7773-4E2D-B046-FAE91310E3D0}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{2E25ADB7-7773-4E2D-B046-FAE91310E3D0}.Release|Any CPU.Build.0 = Release|Any CPU
-		{2E25ADB7-7773-4E2D-B046-FAE91310E3D0}.Release|x64.ActiveCfg = Release|x64
-		{2E25ADB7-7773-4E2D-B046-FAE91310E3D0}.Release|x64.Build.0 = Release|x64
 		{CD74CB1F-2D46-4FDE-8979-E46772AF6CCB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{CD74CB1F-2D46-4FDE-8979-E46772AF6CCB}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{CD74CB1F-2D46-4FDE-8979-E46772AF6CCB}.Debug|x64.ActiveCfg = Debug|x64
@@ -97,6 +89,14 @@ Global
 		{0BF8802C-7AF3-4DA0-92EF-AE5C1B9DF5ED}.Debug|x64.ActiveCfg = Debug
 		{0BF8802C-7AF3-4DA0-92EF-AE5C1B9DF5ED}.Release|Any CPU.ActiveCfg = Release
 		{0BF8802C-7AF3-4DA0-92EF-AE5C1B9DF5ED}.Release|x64.ActiveCfg = Release
+		{B6479354-2D57-45B5-8569-BEEC94D12805}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B6479354-2D57-45B5-8569-BEEC94D12805}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B6479354-2D57-45B5-8569-BEEC94D12805}.Debug|x64.ActiveCfg = Debug|x64
+		{B6479354-2D57-45B5-8569-BEEC94D12805}.Debug|x64.Build.0 = Debug|x64
+		{B6479354-2D57-45B5-8569-BEEC94D12805}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B6479354-2D57-45B5-8569-BEEC94D12805}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B6479354-2D57-45B5-8569-BEEC94D12805}.Release|x64.ActiveCfg = Release|x64
+		{B6479354-2D57-45B5-8569-BEEC94D12805}.Release|x64.Build.0 = Release|x64
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

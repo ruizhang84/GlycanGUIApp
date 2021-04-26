@@ -24,7 +24,8 @@ namespace GlycanQuantApp
         {
             InitializeComponent();
             MS1Tol.Text = SearchingParameters.Access.Tolerance.ToString();
-            RetentionTol.Text = SearchingParameters.Access.retentionRange.ToString();
+            PeakThreshold.Text = SearchingParameters.Access.Threshold.ToString();
+            PeakCutoff.Text = SearchingParameters.Access.PeakCutoff.ToString();
             if (SearchingParameters.Access.ToleranceBy
                 == ToleranceBy.Dalton)
             {
@@ -67,13 +68,23 @@ namespace GlycanQuantApp
                 return false;
             }
 
-            if (double.TryParse(RetentionTol.Text, out double reTol))
+            if (double.TryParse(PeakThreshold.Text, out double thresh))
             {
-                ConfigureParameters.Access.retentionRange = reTol;
+                ConfigureParameters.Access.Threshold = thresh;
             }
             else
             {
-                MessageBox.Show("Retention value is invalid!");
+                MessageBox.Show("Peak threshold is invalid!");
+                return false;
+            }
+
+            if (double.TryParse(PeakCutoff.Text, out double pkCut))
+            {
+                ConfigureParameters.Access.PeakCutoff = pkCut;
+            }
+            else
+            {
+                MessageBox.Show("Peak cutoff is invalid!");
                 return false;
             }
 

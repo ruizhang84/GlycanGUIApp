@@ -26,25 +26,6 @@ namespace GlycanSpectrum
         public List<double> Guis { get; set; } = new List<double>();
 
         protected List<GUI> GuiPoints = new List<GUI>();
-        IAreaCalculator areaCalculator = new TrapezoidalRule();
-
-        public double Area(ISpectrumReader reader)
-        {
-            if (!initialized) return 0;
-
-            List<double> X = new List<double>();
-            List<double> Y = new List<double>();
-            
-            foreach (GUI g in GuiPoints.OrderBy(p => p.Scan))
-            {
-                double rt = reader.GetRetentionTime(g.Scan);
-                double intensity = g.Peak.GetIntensity();
-                X.Add(rt);
-                Y.Add(intensity);
-            }
-
-            return areaCalculator.Area(X, Y);
-        }
 
         public void Run(ISpectrumReader reader, Counter counter)
         {

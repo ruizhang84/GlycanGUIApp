@@ -27,22 +27,11 @@ using System.Threading.Tasks;
 namespace GlycanQuantConsoleApp
 {
     class Program
-    {
-        static double Area(ISpectrumReader reader, List<GUI> GuiPoints)
+    {     
+
+        static double Normalize(ICurveFitting Fitter,  double time)
         {
-            IAreaCalculator areaCalculator = new TrapezoidalRule();
-            List<double> X = new List<double>();
-            List<double> Y = new List<double>();
-
-            foreach (GUI g in GuiPoints.OrderBy(p => p.Scan))
-            {
-                double rt = reader.GetRetentionTime(g.Scan);
-                double intensity = g.Peak.GetIntensity();
-                X.Add(rt);
-                Y.Add(intensity);
-            }
-
-            return areaCalculator.Area(X, Y);
+            return Fitter.GlucoseUnit(time);
         }
         static List<GUI> Init(ref ICurveFitting Fitter, ISpectrumReader reader)
         {
@@ -111,11 +100,6 @@ namespace GlycanQuantConsoleApp
 
             return GuiPoints;
         }
-        static double Normalize(ICurveFitting Fitter,  double time)
-        {
-            return Fitter.GlucoseUnit(time);
-        }
-
         static void Main(string[] args)
         {
             string dir = @"C:\Users\iruiz\Downloads\GUI\compare\data";

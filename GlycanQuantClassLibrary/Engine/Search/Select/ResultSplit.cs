@@ -152,7 +152,7 @@ namespace GlycanQuantClassLibrary.Engine.Search.Select
             foreach (int apex in localMax)
             {
                 List<IResult> collector = Collect(results, apex, visited);
-                if (Area(results[apex]) > noise)
+                if (Area(results[apex]) > noise && collector.Count > 0)
                     selected.Add(new SelectResult(results[apex], collector));
             }
         }

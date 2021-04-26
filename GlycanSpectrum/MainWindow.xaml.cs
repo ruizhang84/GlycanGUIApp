@@ -150,7 +150,6 @@ namespace GlycanSpectrum
                 List<IResult> results = spectrumSearch.Search(spectrum);
                 double rt = spectrumReader.GetRetentionTime(scan);
                 double index = Math.Round(engine.Normalize(rt), 2);
-                double area = engine.Area(spectrumReader);
 
                 ConcurrentDictionary<IResult, double> quant = new ConcurrentDictionary<IResult, double>();
                 Parallel.ForEach(results, (r) =>
@@ -174,8 +173,7 @@ namespace GlycanSpectrum
                                 scan.ToString(), rt.ToString(), 
                                 index > 0? index.ToString():"0",
                                 r.Glycan().GetGlycan().Name(), r.GetMZ().ToString(),
-                                quant[r].ToString(),
-                                area > 0? (quant[r]/area).ToString():"0"
+                                quant[r].ToString()
                             };
 
                             writer.WriteLine(string.Join(",", output));

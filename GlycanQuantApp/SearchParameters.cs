@@ -13,7 +13,8 @@ namespace GlycanQuantApp
         public double Tolerance { get; set; } = 10;
         public ToleranceBy ToleranceBy { get; set; } = ToleranceBy.PPM;
         // retention
-        public double retentionRange { get; set; } = 3;
+        public double Threshold { get; set; } = 0.5;
+        public double PeakCutoff { get; set; } = 0.5;
         // parameter
         public int MaxCharage { get; set; } = 3;
         public double Cutoff { get; set; } = 0.9;
@@ -32,7 +33,8 @@ namespace GlycanQuantApp
         {
             Tolerance = ConfigureParameters.Access.Tolerance;
             ToleranceBy = ConfigureParameters.Access.ToleranceBy;
-            retentionRange = ConfigureParameters.Access.retentionRange;
+            Threshold = ConfigureParameters.Access.Threshold;
+            PeakCutoff = ConfigureParameters.Access.PeakCutoff;
             MaxCharage = ConfigureParameters.Access.MaxCharage;
             Cutoff = ConfigureParameters.Access.Cutoff;
             Hydrogen = ConfigureParameters.Access.Hydrogen;
@@ -54,7 +56,8 @@ namespace GlycanQuantApp
         public ToleranceBy ToleranceBy { get; set; } = ToleranceBy.PPM;
 
         // retention
-        public double retentionRange { get; set; } = 3;
+        public double Threshold { get; set; } = 0.5;
+        public double PeakCutoff { get; set; } = 0.5;
         // parameter
         public int MaxCharage { get; set; } = 3;
         public double Cutoff { get; set; } = 0.9;

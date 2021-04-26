@@ -21,8 +21,10 @@
             <RadioButton Name="MS1TolByDalton" Content="Dalton" VerticalAlignment="Center" Margin="5" Checked="MS1TolByDalton_Checked"/>
         </StackPanel>
         <StackPanel Orientation="Horizontal"  Grid.Row="1">
-            <Label Content="Retention Range (min)"/>
-            <TextBox Name="RetentionTol" Text="3" VerticalAlignment="Center" FontSize="12" Width="76"/>
+            <Label Content="Peak Threshold"/>
+            <TextBox Name="PeakThreshold" Text="0.5" VerticalAlignment="Center" FontSize="12" Width="76"/>
+            <Label Content="Cutoff"/>
+            <TextBox Name="PeakCutoff" Text="0.5" VerticalAlignment="Center" FontSize="12" Width="76"/>
         </StackPanel>
         <StackPanel Orientation="Horizontal"  Grid.Row="2">
             <Label Content="Max Charge"/>
