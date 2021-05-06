@@ -19,7 +19,7 @@
         <Border HorizontalAlignment="Stretch" VerticalAlignment="Stretch" BorderBrush="Black" Grid.Row="0">
             <StackPanel Orientation="Horizontal">
                 <Label Content="MS Files" HorizontalAlignment="Left" VerticalAlignment="Center"/>
-                <Button x:Name="MSMSFileNames" Content="Open Spectra Files (*.Raw/*.MGF)" VerticalAlignment="Center" Padding="5, 1, 5, 1" Click="MSMSFileNames_Click"/>
+                <Button x:Name="MSMSFileNames" Content="Open Spectra Files (*.Raw)" VerticalAlignment="Center" Padding="5, 1, 5, 1" Click="MSMSFileNames_Click"/>
             </StackPanel>
         </Border>
         <Border HorizontalAlignment="Stretch" VerticalAlignment="Stretch" BorderBrush="Black" Grid.Row="2">

@@ -106,7 +106,7 @@ namespace GlycanQuantApp
             {
                 using (StreamWriter writer = new StreamWriter(ostrm))
                 {
-                    if (normalizer.Initialized())
+                    if (!normalizer.Initialized())
                         writer.WriteLine("scan,time,glycan,mz,area");
                     else
                         writer.WriteLine("scan,time,GUI,glycan,mz,area");
@@ -169,7 +169,7 @@ namespace GlycanQuantApp
             {
                 using (StreamWriter writer = new StreamWriter(ostrm))
                 {
-                    if (normalizer.Initialized())
+                    if (!normalizer.Initialized())
                         writer.WriteLine("scan,time,glycan,mz,area");
                     else
                         writer.WriteLine("scan,time,GUI,glycan,mz,area");
