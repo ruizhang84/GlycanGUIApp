@@ -49,7 +49,7 @@ namespace GlycanQuant.Model.NGlycans
                     sugar, permethylated);
                 foreach (Element elm in tempCompose.Keys)
                 {
-                    if (formulaComposition.ContainsKey(elm))
+                    if (!formulaComposition.ContainsKey(elm))
                     {
                         formulaComposition[elm] = 0;
                     }
