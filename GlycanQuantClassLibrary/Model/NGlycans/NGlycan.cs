@@ -53,7 +53,7 @@ namespace GlycanQuant.Model.NGlycans
                     {
                         formulaComposition[elm] = 0;
                     }
-                    formulaComposition[elm] = tempCompose[elm] * composition[sugar];
+                    formulaComposition[elm] += tempCompose[elm] * composition[sugar];
                 }
             }
 
